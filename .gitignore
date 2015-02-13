@@ -4,3 +4,11 @@
 node_modules/
 
 conf/
+
+avatar
+avatar.exe
+
+log/
+cache/
+
+static/
