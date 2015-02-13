@@ -1,0 +1,66 @@
+<div class='g-hd'>
+	<div class='f-cb f-ct'>
+		<div class='f-fl'>
+			<span class='f-fs20 f-fwb'>用户登录</span>
+			<span class='f-fs14 text-muted'>
+				还没有账号?<a class='f-ml5' href='#!/register'>立即注册</a>
+			</span>
+		</div>
+		<ul class='f-fr crumb'>
+			<li>
+				<a href='#!//'>首页</a>
+			</li>
+			<li>&gt;</li>
+			<li class='active'>登陆</li>
+		</ul>
+	</div>
+</div>
+
+<div class='g-bd f-p20 f-ct f-mt20 f-mb50' ms-controller='checkLogin' id='check-login'>
+	<div class='f-pr logo-content'>
+		<img src='/static/img/logo-img.png'>
+		<div class="g-bd1 f-cb other">
+			<div class="g-sd1">
+				<p class='f-fwb'>或</p>
+			</div>
+			<div class="g-mn1">
+				<div class="g-mn1c f-pr">
+					<div class='acc-item baidu' name='baidu'></div>
+					<div class='acc-item qzone' name='qqdenglu'></div>
+					<div class='acc-item tsina' name='sinaweibo'></div>
+					<div class='other-hide f-dn'>
+						<div class='acc-item renren' name='renren'></div>
+						<div class='acc-item tqq' name='qqweibo'></div>
+						<div class='acc-item kaixin' name='kaixin'></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class='f-tac f-fs30 f-fwb f-mt20'>登录我酷账号</div>
+	<div class='form-content'>
+		<form class='f-mt50 f-ma f-cb'>
+			<div class='input-group f-wm f-mt10'>
+				<span class='input-addon'>账号</span>
+				<input class='f-wm' type='text' name='account' id='account' ms-duplex='account' placeholder='邮箱 手机号'>
+			</div>
+
+			<div class='input-group f-wm f-mt10'>
+				<span class='input-addon'>密码</span>
+				<input class='f-wm' type='password' name='password' ms-duplex='password'>
+			</div>
+
+			<button class='btn btn-default f-wm f-mt10' type='button' ms-click='submit'>
+				登陆<span class='f-fs14 f-ml5'>Enter</span>
+			</button>
+
+			<p class='f-fs14 f-fl f-mt10'>
+				<a id='registersoon' href='#!/register'>快速注册</a>
+			</p>
+
+			<p class='f-fs14 f-fr f-mt10'>
+				<a href='#!/findpass'>忘记密码?</a>
+			</p>
+		</form>
+	</div>
+</div>

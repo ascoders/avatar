@@ -1,0 +1,60 @@
+<div id='article' ms-controller='article'>
+	<div class='f-ct f-cb f-mt20'>
+  	<div class="g-mn2">
+      <div class="g-mn2c">
+	      <div class='g-bd f-p20'>
+	      	<div class='title'>{[{article.t}]}</div>
+	      	<div class='info f-cb'>
+	      		浏览量：{[{article.v}]}&nbsp;&nbsp;评论：{[{article.r}]}
+	      		<span class='f-fr'>
+	      			{[{author.n}]}：<span class='timeago' ms-attr-title='article.tm'></span>
+	      		</span>
+	      	</div>
+	      	<hr>
+	      	<div class='content f-wwb'>{[{article.co | html}]}</div>
+	      	<!-- 评论 -->
+	      	<div class='replys' ms-repeat='replys'>
+	      		<div class='title'>
+	      			<img class='img' ms-src='el.ui'>
+	      			123
+	      		</div>
+	      		<div class='detail'>{[{el.co | html}]}</div>
+	      	</div>
+	      </div>
+
+        <!-- 分页按纽 -->
+        <div class="g-bd f-mt20 f-cb" ms-if='pagin != ""'>
+          {[{pagin | html}]}
+        </div>
+
+        <!-- 发帖框 -->
+        <div class='g-bd f-mt20 f-cb f-p20'>
+          <div class="g-bd1 f-cb">
+            <textarea id='editor' ms-duplex='inputContent' maxlength='10000'></textarea>
+            <button class='btn btn-default f-mt10' ms-click='submit'>提交</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="g-sd2">
+      <div class='g-bd f-p20'>
+      	<img class='author-image' ms-if='author.i' ms-src='author.i'>
+      	<div class='f-mt10'><a ms-href='https://github.com/{[{author.l}]}' class='btn btn-default github'><i class="fa fa-github f-mr5"></i>{[{author.n}]}</a></div>
+      	<div class='f-mt10'>注册：<span class='timeago' ms-attr-title='author.t'></span></div>
+      	<div class='f-cb f-mt10'>
+      		<div class='f-w6'>发布：{[{author.a}]}</div>
+      		<div class='f-w6'>评论：{[{author.r}]}</div>
+      	</div>
+      </div>
+      <div class='g-bd f-mt10' ms-if='hot.size() != 0'>
+      	<div class='bar-title'>被热评的</div>
+      	<a class='bar-content' ms-repeat='hot' ms-href='#!/art/{[{el._id}]}'>{[{el.t}]}</a>
+
+      </div>
+      <div class='g-bd f-mt10' ms-if='cold.size() != 0'>
+      	<div class='bar-title'>被忽视的</div>
+      	<a class='bar-content' ms-repeat='cold' ms-href='#!/art/{[{el._id}]}'>{[{el.t}]}</a>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+#check-login {
+	/* 注册表单样式 */
+	.form-content {
+		width: 500px;
+		margin: 0 auto;
+	}
+	
+	/* 两列右侧自适应布局 */
+	.g-bd1 {
+		margin: 0 0 10px;
+	}
+	.g-sd1 {
+		position: relative;
+		float: left;
+		width: 90px;
+		margin-right: -90px;
+	}
+	.g-mn1 {
+		float: right;
+		width: 100%;
+	}
+	.g-mn1c {
+		margin-left: 50px;
+	}
+	
+	/* logo */
+	.logo-content {
+		width: 100px;
+		height: 100px;
+		margin: 0 auto;
+	}
+	.logo-content img {
+		width: 100px;
+		height: 100px;
+	}
+	
+	/* 其他帐号登陆 */
+	.other {
+		position: absolute;
+		left: 160px;
+		width: 240px;
+		top: 15px;
+	}
+	.acc-item {
+		width: 50px;
+		height: 50px;
+		background: url(/static/img/social.png) no-repeat 0 0;
+		cursor: pointer;
+		cursor: hand;
+		display: inline-block;
+		margin-left: 10px;
+	}
+	.qzone {
+		background-position: 0 -60px;
+	}
+	.tqq {
+		background-position: 0 -180px;
+	}
+	.tsina {
+		background-position: 0 -0px;
+	}
+	.baidu {
+		background-position: 0 -300px;
+	}
+	.kaixin {
+		background-position: 0 -240px;
+	}
+	.renren {
+		background-position: 0 -120px;
+	}
+}

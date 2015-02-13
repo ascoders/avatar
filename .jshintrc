@@ -1,0 +1,10 @@
+{
+  "indent": 2,
+  "white": true,
+  "node": true,
+  "undef": false,
+  "unused": true,
+  "-W058": true,
+  "-W014": true,
+  "expr": true
+}

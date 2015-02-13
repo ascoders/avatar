@@ -1,0 +1,6 @@
+.gitconfig
+.git-credentials
+
+node_modules/
+
+conf/

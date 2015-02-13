@@ -1,0 +1,1849 @@
+﻿///////////////////////////////////////////////////////////////////////////////////////////////
+// 函数
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+@mixin box-sizing ($value) {
+    -webkit-box-sizing: $value;
+    -moz-box-sizing: $value;
+    box-sizing: $value;
+}
+@mixin box-shadow ($value) {
+    -webkit-box-shadow: $value;
+    -moz-box-shadow: $value;
+    box-shadow: $value;
+}
+@mixin user-select($value) {
+    user-select: $value;
+    -webkit-user-select: $value;
+    -moz-user-select: $value;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 样式设定
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+$font-color: #333;
+$link-color: #369;
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 重置样式
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+html, body, h1, h2, h3, h4, h5, h6, div, dl, dt, dd, ul, ol, li, p, blockquote, pre, hr, figure, table, caption, th, td, form, fieldset, legend, input, button, textarea, menu {
+    margin: 0;
+    padding: 0;
+}
+html {
+    overflow-x: hidden;
+}
+html, body {
+    width: 100%;
+    height: 100%;
+}
+header, footer, section, article, aside, nav, hgroup, address, figure, figcaption, menu, details {
+    display: block;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+caption, th {
+    text-align: left;
+    font-weight: normal;
+}
+html, body, fieldset, img, iframe, abbr {
+    border: 0;
+}
+i, cite, var, address, dfn {
+    font-style: normal;
+}
+[hidefocus], summary {
+    outline: 0;
+}
+ul, ol {
+    padding-left: 30px;
+}
+li {
+    letter-spacing: 1px;
+}
+h1, h2, h3, h4, h5, h6, small {
+    font-size: 100%;
+}
+sup, sub {
+    font-size: 83%;
+}
+pre, code, kbd, samp {
+    font-family: inherit;
+}
+code {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #C7254E;
+    background-color: #F9F2F4;
+    border-radius: 4px;
+}
+pre code {
+    padding: 0;
+    font-size: 100%;
+    color: inherit;
+    background-color: inherit;
+    border-radius: 0;
+}
+pre, blockquote {
+    margin: 10px 0;
+}
+q:before, q:after {
+    content: none;
+}
+textarea {
+    overflow: auto;
+    resize: none;
+    font-size: 16px;
+    line-height: 22px;
+}
+label, summary {
+    cursor: pointer;
+    curosr: hand;
+    @include user-select(none);
+}
+a, button {
+    cursor: pointer;
+}
+h1, h2, h3, h4, h5, h6, strong, b {
+    font-weight: bold;
+}
+a {
+    text-decoration: none;
+    color: $link-color;
+}
+del, ins, u, s, a:hover {
+    text-decoration: underline;
+}
+body, textarea, input, button, select, keygen, legend {
+    font-family: 'Helvetica', 'microsoft yahei', Arial, sans-serif;
+    color: $font-color;
+    outline: 0;
+}
+html.dark::-webkit-input-placeholder {
+    color: #666;
+    text-shadow: none;
+}
+html.dark:-moz-placeholder {
+    color: #666;
+    text-shadow: none;
+}
+html.dark::-moz-placeholder {
+    color: #666;
+    text-shadow: none;
+}
+html.dark:-ms-input-placeholder {
+    color: #666;
+    text-shadow: none;
+}
+hr {
+    border: 0;
+    height: 0;
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid white;
+    margin: 10px 0px;
+}
+* {
+    @include box-sizing(border-box);
+}
+body {
+    min-width: 1170px;
+}
+html {
+    background: #EAEAEA;
+}
+html.dark {
+    background: #222;
+}
+input, select, textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin: 0px;
+}
+input, textarea {
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
+    outline: none;
+}
+input[type=checkbox], input[type=radio] {
+    border: none;
+}
+p {
+    margin: 10px 0;
+    line-height: 25px;
+}
+h1, h2, h3, h4, h5, h6 {
+    margin: 20px 0;
+}
+blockquote {
+    border-left: 5px solid #ddd;
+    padding: 1px 1px 1px 15px;
+    background: whitesmoke;
+}
+//表头必定不能换行
+table thead {
+    white-space: nowrap;
+}
+table thead tr th {
+    padding: 10px;
+    font-weight: bold;
+    background: #F9F9F9;
+}
+table tbody tr td {
+    padding: 10px;
+    position: relative;
+}
+select {
+    cursor: pointer;
+    cursor: hand;
+}
+select:disabled, input:disabled {
+    background: whitesmoke;
+    color: #bbb;
+}
+input:focus, html.dark input:focus {
+    border-left: 3px solid #5cb85c !important;
+    padding-left: 8px;
+}
+::selection {
+    background: #ccc;
+}
+.table-bordered>thead>tr>td {
+    background: whitesmoke;
+}
+html.dark .table-bordered>thead>tr>td {
+    background: #222;
+}
+td {
+    outline: none;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 整体布局
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+//整体文档
+.g-doc {
+    position: relative;
+    min-height: 100%;
+    _height: 100%;
+    padding: 0 0 60px;
+    zoom: 1;
+}
+.g-hd {
+    background: #F8F8F8;
+    padding: 25px 0;
+    border-bottom: 1px solid #ccc;
+    box-shadow: 0 0 2px #BBB;
+    -moz-box-shadow: 0 0 2px #bbb;
+    -webkit-box-shadow: 0 0 2px #BBB;
+}
+//导航条
+.g-hd .crumb {
+    color: #aaa;
+    padding: 3px 20px;
+    padding: 3px 20px;
+    margin: 0;
+}
+.g-hd .crumb li {
+    float: left;
+    font-size: 14px;
+    line-height: 25px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+.g-hd .crumb li+li {
+    margin-left: 5px;
+}
+.g-bd {
+    background: white;
+    @include box-shadow(0px 1px 5px #ccc);
+}
+// 左自适应右定宽
+.g-bdg {
+    margin: 0 0 10px;
+}
+.g-sdg {
+    position: relative;
+    float: right;
+    width: 300px;
+    margin-left: -300px
+}
+.g-sdbd {
+    border: 1px solid #ccc;
+    background: #FFF;
+}
+.g-sdgh {
+    background: whitesmoke;
+    padding: 7px 10px;
+    color: #333;
+    border-bottom: 1px solid #ccc;
+}
+.g-sdgl {
+    position: relative;
+    display: block;
+    word-wrap: break-word;
+    padding: 0 60px 0 15px;
+    color: #333;
+    height: 34px;
+    line-height: 34px;
+    overflow: hidden;
+    &.active {
+        padding-left: 10px;
+        border-left: 5px solid #4CAE4C;
+    }
+    &:hover {
+        text-decoration: none;
+        background: #f5f5f5;
+    }
+}
+.g-sdgl-noright {
+    padding-right: 15px;
+}
+.g-sdgl {
+    border-bottom: 1px solid #ddd;
+}
+.g-sdgr {
+    position: absolute;
+    right: 0;
+    top: 0px;
+    font-size: 14px;
+    width: 55px;
+    text-align: right;
+}
+.g-sdgr .views {
+    background: #5CB85C;
+    padding: 9px 5px;
+    color: white;
+}
+.g-mng {
+    float: left;
+    width: 100%;
+}
+.g-mngc {
+    margin-right: 310px;
+}
+//分页按钮
+.g-pa {
+    padding: 0;
+}
+.g-pa li {
+    float: left;
+    list-style: none;
+    margin: 0;
+}
+.g-pa li+li {
+    margin-left: -1px;
+}
+.g-pa li a {
+    display: block;
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-bottom: none;
+    height: 34px;
+}
+.g-pa li a:not(.disabled):not(.active):hover {
+    background: whitesmoke;
+    text-decoration: none;
+}
+.g-pa li .disabled {
+    color: #ccc;
+}
+.g-pa li .disabled:hover, .g-pa li a.active:hover {
+    cursor: default;
+    text-decoration: none;
+}
+.g-pa li a.active {
+    background: #428BCA;
+    color: white;
+}
+.g-pas {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    padding: 5px 10px;
+    width: 100px;
+    height: 34px;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+}
+//页尾
+.g-ft {
+    height: 40px;
+    margin: -40px 0 0;
+    line-height: 40px;
+    background: #28966F;
+    color: #F0FFFB;
+    border-top: 1px solid #ccc;
+}
+.g-ft a {
+    color: #888;
+}
+.g-ft #j-qrcode img {
+    bottom: 0;
+    right: 0;
+    width: 80px;
+}
+.g-ft hr {
+    border-top: 1px solid #ccc;
+    border-bottom: 1px solid white;
+}
+
+/* 两列左侧自适应布局 */
+.g-bd2 {
+    margin: 0 0 10px;
+}
+.g-sd2 {
+    position: relative;
+    float: right;
+    width: 230px;
+    margin-left: -230px
+}
+.g-mn2 {
+    float: left;
+    width: 100%;
+}
+.g-mn2c {
+    margin-right: 240px;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 模块
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+//导航条
+.m-nav {
+    background: #28966F;
+    height: 40px;
+    color: white;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    border-bottom: 1px solid #ccc;
+    .f-ct {
+        width: 90%;
+    }
+    .header {
+        padding: 0;
+        height: 40px;
+    }
+    ul {
+        margin: 0;
+        padding: 0;
+    }
+    ul li {
+        list-style: none;
+        float: left;
+        margin: 0;
+    }
+    ul li a {
+        display: block;
+        color: #F0FFFB;
+        height: 40px;
+        line-height: 40px;
+        padding: 0 15px;
+        font-size: 14px;
+        &:hover {
+            color: white;
+            text-decoration: none;
+        }
+    }
+    .msg {
+        width: 500px;
+    }
+    .msg a {
+        display: inline-block;
+        padding: 0 13px;
+    }
+    .j-drop {
+        position: relative;
+    }
+    .j-drop-content {
+        background: #28966F;
+        border: 1px solid #ccc;
+        border-top: none;
+        margin-top: -1px;
+    }
+    .j-drop-content li {
+        float: none;
+    }
+    .j-drop-content li a {
+        height: 35px;
+        line-height: 35px;
+        min-width: 150px;
+    }
+    .j-right-drop {
+        position: relative;
+    }
+    .j-right-drop-content {
+        background: #F8F8F8;
+        border: 1px solid #ccc;
+        border-left: none;
+        left: 150px;
+        top: -1px;
+    }
+    .cut {
+        height: 0px;
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid white;
+    }
+    .pro-label {
+        width: 250px;
+    }
+    .pro {
+        padding: 0 10px 10px 10px;
+    }
+    .pro .progress {
+        height: 12px;
+        margin-bottom: 0px;
+    }
+    .header-button {
+        cursor: default;
+        padding: 0 10px 10px 10px;
+    }
+    .header-button input {
+        vertical-align: middle;
+        margin-top: -2px;
+        margin-bottom: 1px;
+        border: none;
+    }
+    .info-number {
+        top: 5px;
+        left: 20px;
+    }
+    .user-image {
+        width: 25px;
+        height: 25px;
+        position: absolute;
+        top: 7px;
+        left: 10px;
+        border-radius: 3px;
+    }
+    .user-name {
+        margin-left: 25px;
+    }
+}
+//底部对齐列表
+.m-ub {
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+    letter-spacing: -0.307em;
+    *letter-spacing: normal;
+    *word-spacing: -1px;
+}
+.m-ub li {
+    display: inline-block;
+    *zoom: 1;
+    *display: inline;
+    vertical-align: bottom;
+    font-size: 12px;
+    letter-spacing: normal;
+    word-spacing: normal;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 元件
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.u-head {
+    border-bottom: 10px solid #fdc204;
+    font-weight: bold;
+    font-size: 25px;
+    padding-bottom: 10px;
+}
+.u-head-small {
+    font-size: 20px;
+    border-bottom: 5px solid #fdc204;
+}
+.u-info {
+    font-size: 12px;
+    width: 20px;
+    height: 15px;
+    border-radius: 10px;
+    background: orange;
+    display: inline-block;
+    text-align: center;
+    color: white;
+    line-height: 15px;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 方法
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.f-cb:after, .f-cbli li:after {
+    display: block;
+    clear: both;
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+    content: ".";
+}
+.f-cb, .f-cbli li {
+    zoom: 1;
+}
+.f-ib {
+    display: inline-block;
+    *display: inline;
+    *zoom: 1;
+}
+.f-dn {
+    display: none;
+}
+.f-db {
+    display: block;
+}
+.f-fl {
+    float: left;
+}
+.f-fr {
+    float: right;
+}
+.f-pr {
+    position: relative;
+}
+.f-pa {
+    position: absolute;
+}
+.f-prz {
+    position: relative;
+    zoom: 1;
+}
+.f-oh {
+    overflow: hidden;
+}
+.f-fs12 {
+    font-size: 12px;
+}
+.f-fs14 {
+    font-size: 14px;
+}
+.f-fs16 {
+    font-size: 16px;
+}
+.f-fs20 {
+    font-size: 20px;
+}
+.f-fs30 {
+    font-size: 30px;
+}
+.f-fs40 {
+    font-size: 40px;
+}
+.f-fs50 {
+    font-size: 50px;
+}
+.f-fs60 {
+    font-size: 60px;
+}
+.f-fs80 {
+    font-size: 80px;
+}
+.f-fs100 {
+    font-size: 100px;
+}
+.f-fwn {
+    font-weight: normal;
+}
+.f-fwb {
+    font-weight: bold;
+}
+.f-tal {
+    text-align: left;
+}
+.f-tac {
+    text-align: center;
+}
+.f-tar {
+    text-align: right;
+}
+.f-taj {
+    text-align: justify;
+    text-justify: inter-ideograph;
+}
+.f-vam, .f-vama * {
+    vertical-align: middle;
+}
+.f-vab {
+    vertical-align: bottom
+}
+.f-wsn {
+    word-wrap: normal;
+    white-space: nowrap;
+}
+.f-pre {
+    overflow: hidden;
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+.f-wwb {
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+}
+.f-ti {
+    overflow: hidden;
+    text-indent: -30000px;
+}
+.f-ti2 {
+    text-indent: 2em;
+}
+.f-lhn {
+    line-height: normal;
+}
+.f-tdu, .f-tdu:hover {
+    text-decoration: underline;
+}
+.f-tdn, .f-tdn:hover {
+    text-decoration: none;
+}
+.f-toe {
+    overflow: hidden;
+    word-wrap: normal;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.f-csp {
+    cursor: pointer !important;
+    cursor: hand !important;
+}
+.f-csd {
+    cursor: default !important;
+}
+.f-csh {
+    cursor: help;
+}
+.f-csm {
+    cursor: move;
+}
+.f-usn {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+.f-cb .f-w1, .f-w2, .f-w3, .f-w4, .f-w5, .f-w6, .f-w7, .f-w8, .f-w9, .f-w10, .f-w11, .f-w12 {
+    float: left;
+}
+.f-w1 {
+    width: 8.33333333%
+}
+.f-w2 {
+    width: 16.66666667%
+}
+.f-w3 {
+    width: 25%
+}
+.f-w4 {
+    width: 33.33333333%
+}
+.f-w5 {
+    width: 41.66666667%
+}
+.f-w6 {
+    width: 50%
+}
+.f-w7 {
+    width: 58.33333333%
+}
+.f-w8 {
+    width: 66.66666667%
+}
+.f-w9 {
+    width: 75%
+}
+.f-w10 {
+    width: 83.33333333%
+}
+.f-w11 {
+    width: 91.66666667%
+}
+.f-w12 {
+    width: 100%;
+}
+.f-os1 {
+    margin-left: 8.33333333%;
+}
+.f-os2 {
+    margin-left: 16.66666667%
+}
+.f-os3 {
+    margin-left: 25%
+}
+.f-os4 {
+    margin-left: 33.33333333%
+}
+.f-os5 {
+    margin-left: 41.66666667%
+}
+.f-os6 {
+    margin-left: 50%
+}
+.f-os7 {
+    margin-left: 58.33333333%
+}
+.f-os8 {
+    margin-left: 66.66666667%
+}
+.f-os9 {
+    margin-left: 75%
+}
+.f-os10 {
+    margin-left: 83.33333333%
+}
+.f-os11 {
+    margin-left: 91.66666667%
+}
+.f-hm {
+    height: 100%;
+}
+.f-wm {
+    width: 100%;
+}
+.f-w50 {
+    width: 50%;
+}
+.f-ma {
+    margin: 0 auto;
+}
+.f-ct {
+    width: 90%;
+    margin: 0 auto;
+    position: relative;
+}
+.f-m0 {
+    margin: 0px !important;
+}
+.f-mt-1 {
+    margin-top: -1px !important;
+}
+.f-mt0 {
+    margin-top: 0px !important;
+}
+.f-mt5 {
+    margin-top: 5px !important;
+}
+.f-mt10 {
+    margin-top: 10px !important;
+}
+.f-mt12 {
+    margin-top: 12px !important;
+}
+.f-mt15 {
+    margin-top: 15px !important;
+}
+.f-mt20 {
+    margin-top: 20px !important;
+}
+.f-mt30 {
+    margin-top: 30px !important;
+}
+.f-mt50 {
+    margin-top: 50px !important;
+}
+.f-mb0 {
+    margin-bottom: 0px !important;
+}
+.f-mb10 {
+    margin-bottom: 10px !important;
+}
+.f-mb15 {
+    margin-bottom: 15px !important;
+}
+.f-mb20 {
+    margin-bottom: 20px !important;
+}
+.f-mb30 {
+    margin-bottom: 30px !important;
+}
+.f-mb50 {
+    margin-bottom: 50px !important;
+}
+.f-ml-1 {
+    margin-left: -1px !important;
+}
+.f-ml5 {
+    margin-left: 5px !important;
+}
+.f-ml10 {
+    margin-left: 10px !important;
+}
+.f-ml15 {
+    margin-left: 15px !important;
+}
+.f-ml20 {
+    margin-left: 20px !important;
+}
+.f-mr5 {
+    margin-right: 5px !important;
+}
+.f-mr10 {
+    margin-right: 10px !important;
+}
+.f-mr15 {
+    margin-right: 15px !important;
+}
+.f-mr20 {
+    margin-right: 20px !important;
+}
+.f-p0 {
+    padding: 0 !important;
+}
+.f-pl5 {
+    padding-right: 5px !important;
+}
+.f-pl10 {
+    padding-left: 10px !important;
+}
+.f-pl15 {
+    padding-left: 15px !important;
+}
+.f-pl20 {
+    padding-left: 20px !important;
+}
+.f-pr5 {
+    padding-right: 5px !important;
+}
+.f-pr10 {
+    padding-right: 10px !important;
+}
+.f-pr15 {
+    padding-right: 15px !important;
+}
+.f-pr20 {
+    padding-right: 20px !important;
+}
+.f-pt0 {
+    padding-top: 0 !important;
+}
+.f-pt5 {
+    padding-top: 5px !important;
+}
+.f-pt10 {
+    padding-top: 10px !important;
+}
+.f-pt15 {
+    padding-top: 15px !important;
+}
+.f-pt20 {
+    padding-top: 20px !important;
+}
+.f-pb5 {
+    padding-bottom: 5px !important;
+}
+.f-pb10 {
+    padding-bottom: 10px !important;
+}
+.f-pb15 {
+    padding-bottom: 15px !important;
+}
+.f-pb20 {
+    padding-bottom: 20px !important;
+}
+.f-p10 {
+    padding: 10px !important;
+}
+.f-p15 {
+    padding: 15px !important;
+}
+.f-p20 {
+    padding: 20px !important;
+}
+.f-p30 {
+    padding: 30px !important;
+}
+.f-p50 {
+    padding: 50px !important;
+}
+.f-h20 {
+    height: 20px !important;
+}
+.f-lh20 {
+    line-height: 20px !important;
+}
+.f-h25 {
+    height: 25px !important;
+}
+.f-lh25 {
+    line-height: 25px !important;
+}
+.f-h30 {
+    height: 30px !important;
+}
+.f-lh30 {
+    line-height: 30px !important;
+}
+.f-zr1 {
+    z-index: -1
+}
+.f-z1 {
+    z-index: 1
+}
+.f-z2 {
+    z-index: 2
+}
+.f-z3 {
+    z-index: 3
+}
+.f-btn {
+    border-top: none !important;
+}
+.f-brn {
+    border-right: none !important;
+}
+.f-bbn {
+    border-top: none !important;
+}
+.f-bln {
+    border-left: none !important;
+}
+.f-bn {
+    border: none !important;
+}
+.f-oxa {
+    overflow-x: auto;
+}
+.f-btc {
+    border-top: 1px solid #ccc;
+}
+.f-r0 {
+    right: 0px;
+}
+.f-lsn {
+    list-style: none;
+}
+//鼠标移上去变颜色
+.f-hvc, .f-hvc-danger {
+    cursor: pointer;
+    cursor: hand;
+}
+.f-hvc:hover {
+    color: #369;
+}
+.f-hvc-danger:hover {
+    color: #D9534F;
+}
+//能拖拽状态
+.f-drag {
+    cursor: move;
+    cursor: -webkit-grab;
+    cursor: -moz-grab;
+    overflow: hidden;
+}
+//拖拽中
+.f-dragging {
+    cursor: move;
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// bootstrap样式
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.text-muted {
+    color: #777;
+}
+.text-primary {
+    color: #428BCA;
+}
+.text-success {
+    color: #3C763D;
+}
+.text-info {
+    color: #31708F;
+}
+.text-warning {
+    color: #8A6D3B;
+}
+.text-danger {
+    color: #A94442;
+}
+.label {
+    display: inline;
+    padding: .2em.6em.3em;
+    font-size: 75%;
+    font-weight: 700;
+    color: #FFF;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+}
+.label-default {
+    background-color: #777;
+}
+.label-primary {
+    background-color: #428BCA;
+}
+.label-success {
+    background-color: #5CB85C;
+}
+.label-info {
+    background-color: #5BC0DE;
+}
+.label-warning {
+    background-color: #F0AD4E;
+}
+.label-danger {
+    background-color: #D9534F;
+}
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 14px;
+    margin-bottom: 0;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background: linear-gradient(#FCFCFC, #EEE);
+    border: 1px solid transparent;
+}
+.btn:hover, .btn:focus {
+    color: #333;
+    text-decoration: none;
+    outline: none;
+    background: linear-gradient(#EEE, #DDD);
+}
+.btn:active, .btn.active {
+    background-image: none;
+    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125)
+}
+.btn.disabled, .btn[disabled], fieldset[disabled].btn {
+    pointer-events: none;
+    cursor: not-allowed;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    opacity: 0.65;
+    color: #999;
+    border: 1px solid #ccc;
+}
+.btn-default {
+    color: #333;
+    background-color: #fff;
+    border-color: #ccc
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {
+    color: #333;
+    background-color: #e6e6e6;
+    border-color: #adadad
+}
+.btn-default:active, .btn-default.active, .open>.dropdown-toggle.btn-default {
+    background-image: none
+}
+.btn-default.disabled, .btn-default[disabled], fieldset[disabled].btn-default, .btn-default.disabled:hover, .btn-default[disabled]:hover, fieldset[disabled].btn-default:hover, .btn-default.disabled:focus, .btn-default[disabled]:focus, fieldset[disabled].btn-default:focus, .btn-default.disabled:active, .btn-default[disabled]:active, fieldset[disabled].btn-default:active, .btn-default.disabled.active, .btn-default[disabled].active, fieldset[disabled].btn-default.active {
+    background-color: #fff;
+    border-color: #ccc;
+}
+.btn-default.badge {
+    color: #fff;
+    background-color: #333
+}
+html.dark .btn.disabled, html.dark .btn[disabled], html.dark fieldset[disabled].btn {
+    border-color: #222;
+}
+.btn:hover, .btn:focus {
+    outline: none;
+}
+html.dark .btn {
+    background: #444;
+    border-color: rgba(0, 0, 0, 0.5);
+    color: whitesmoke;
+}
+html.dark .btn:active {
+    background-color: #111;
+}
+html.dark .btn:hover {
+    background: #555;
+}
+.progress {
+    height: 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
+}
+.progress-bar {
+    float: left;
+    width: 0;
+    height: 100%;
+    font-size: 12px;
+    line-height: 20px;
+    color: #fff;
+    text-align: center;
+    background-color: #428bca;
+    -webkit-box-shadow: inset 0-1px 0 rgba(0, 0, 0, .15);
+    box-shadow: inset 0-1px 0 rgba(0, 0, 0, .15);
+    -webkit-transition: width.6s ease;
+    -o-transition: width.6s ease;
+    transition: width.6s ease;
+}
+.progress-striped.progress-bar, .progress-bar-striped {
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    -webkit-background-size: 40px 40px;
+    background-size: 40px 40px;
+}
+.progress.active.progress-bar, .progress-bar.active {
+    -webkit-animation: progress-bar-stripes 2s linear infinite;
+    -o-animation: progress-bar-stripes 2s linear infinite;
+    animation: progress-bar-stripes 2s linear infinite;
+}
+.progress-bar[aria-valuenow="1"], .progress-bar[aria-valuenow="2"] {
+    min-width: 30px;
+}
+.progress-bar[aria-valuenow="0"] {
+    min-width: 30px;
+    color: #777;
+    background-color: transparent;
+    background-image: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.progress-bar-success {
+    background-color: #5cb85c;
+}
+.progress-striped.progress-bar-success {
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+}
+.progress-bar-info {
+    background-color: #5bc0de;
+}
+html.dark .progress {
+    background: #111;
+    border-color: #333;
+}
+.progress-striped.progress-bar-info {
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+}
+.progress-bar-warning {
+    background-color: #f0ad4e;
+}
+.progress-striped.progress-bar-warning {
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+}
+.progress-bar-danger {
+    background-color: #d9534f;
+}
+.progress-striped.progress-bar-danger {
+    background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15)25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15)50%, rgba(255, 255, 255, .15)75%, transparent 75%, transparent);
+}
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.alert h4 {
+    margin-top: 0;
+    color: inherit;
+}
+.alert.alert-link {
+    font-weight: bold;
+}
+.alert>p, .alert>ul {
+    margin-bottom: 0;
+}
+.alert>p+p {
+    margin-top: 5px;
+}
+.alert-dismissable, .alert-dismissible {
+    padding-right: 35px;
+}
+.alert-dismissable.close, .alert-dismissible.close {
+    position: relative;
+    top: -2px;
+    right: -21px;
+    color: inherit;
+}
+.alert-success {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+.alert-success hr {
+    border-top-color: #c9e2b3;
+}
+.alert-success.alert-link {
+    color: #2b542c;
+}
+.alert-info {
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+.alert-info hr {
+    border-top-color: #a6e1ec;
+}
+.alert-info.alert-link {
+    color: #245269;
+}
+.alert-warning {
+    color: #8a6d3b;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+.alert-warning hr {
+    border-top-color: #f7e1b5;
+}
+.alert-warning.alert-link {
+    color: #66512c;
+}
+.alert-danger {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+}
+.alert-danger hr {
+    border-top-color: #e4b9c0;
+}
+.alert-danger.alert-link {
+    color: #843534;
+}
+.bg-primary {
+    color: #fff;
+    background-color: #428bca
+}
+a.bg-primary:hover {
+    background-color: #3071a9
+}
+.bg-success {
+    background-color: #dff0d8
+}
+a.bg-success:hover {
+    background-color: #c1e2b3
+}
+.bg-info {
+    background-color: #d9edf7
+}
+a.bg-info:hover {
+    background-color: #afd9ee
+}
+.bg-warning {
+    background-color: #fcf8e3
+}
+a.bg-warning:hover {
+    background-color: #f7ecb5
+}
+.bg-danger {
+    background-color: #f2dede
+}
+a.bg-danger:hover {
+    background-color: #e4b9b9
+}
+html.dark .bg-primary, html.dark .bg-success, html.dark .bg-info, html.dark .bg-danger {
+    background: #182A36;
+}
+html.dark .bg-warning {
+    background: #222;
+}
+.bg-negative {
+    background: #eee;
+    color: #999;
+}
+table {
+    background-color: transparent
+}
+th {
+    text-align: left
+}
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px
+}
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+    line-height: 1.42857143;
+    vertical-align: top;
+    border-top: 1px solid #ddd
+}
+.table>thead>tr>th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #ddd
+}
+.table>caption+thead>tr:first-child>th, .table>colgroup+thead>tr:first-child>th, .table>thead:first-child>tr:first-child>th, .table>caption+thead>tr:first-child>td, .table>colgroup+thead>tr:first-child>td, .table>thead:first-child>tr:first-child>td {
+    border-top: 0
+}
+.table>tbody+tbody {
+    border-top: 2px solid #ddd
+}
+.table .table {
+    background-color: #fff
+}
+.table-bordered {
+    border: 1px solid #ddd
+}
+.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td {
+    border: 1px solid #ddd
+}
+.table-bordered>thead>tr>th, .table-bordered>thead>tr>td {
+    border-bottom-width: 2px
+}
+.table-striped>tbody>tr:nth-child(odd)>td, .table-striped>tbody>tr:nth-child(odd)>th {
+    background-color: #f9f9f9
+}
+table col[class*="col-"] {
+    position: static;
+    display: table-column;
+    float: none
+}
+table td[class*="col-"], table th[class*="col-"] {
+    position: static;
+    display: table-cell;
+    float: none
+}
+.table>thead>tr>td.active, .table>tbody>tr>td.active, .table>tfoot>tr>td.active, .table>thead>tr>th.active, .table>tbody>tr>th.active, .table>tfoot>tr>th.active, .table>thead>tr.active>td, .table>tbody>tr.active>td, .table>tfoot>tr.active>td, .table>thead>tr.active>th, .table>tbody>tr.active>th, .table>tfoot>tr.active>th {
+    background-color: #f5f5f5
+}
+.table-hover>tbody>tr>td.active:hover, .table-hover>tbody>tr>th.active:hover, .table-hover>tbody>tr.active:hover>td, .table-hover>tbody>tr:hover>.active, .table-hover>tbody>tr.active:hover>th {
+    background-color: #e8e8e8
+}
+.table>thead>tr>td.success, .table>tbody>tr>td.success, .table>tfoot>tr>td.success, .table>thead>tr>th.success, .table>tbody>tr>th.success, .table>tfoot>tr>th.success, .table>thead>tr.success>td, .table>tbody>tr.success>td, .table>tfoot>tr.success>td, .table>thead>tr.success>th, .table>tbody>tr.success>th, .table>tfoot>tr.success>th {
+    background-color: #dff0d8
+}
+.table-hover>tbody>tr>td.success:hover, .table-hover>tbody>tr>th.success:hover, .table-hover>tbody>tr.success:hover>td, .table-hover>tbody>tr:hover>.success, .table-hover>tbody>tr.success:hover>th {
+    background-color: #d0e9c6
+}
+.table>thead>tr>td.info, .table>tbody>tr>td.info, .table>tfoot>tr>td.info, .table>thead>tr>th.info, .table>tbody>tr>th.info, .table>tfoot>tr>th.info, .table>thead>tr.info>td, .table>tbody>tr.info>td, .table>tfoot>tr.info>td, .table>thead>tr.info>th, .table>tbody>tr.info>th, .table>tfoot>tr.info>th {
+    background-color: #d9edf7
+}
+.table-hover>tbody>tr>td.info:hover, .table-hover>tbody>tr>th.info:hover, .table-hover>tbody>tr.info:hover>td, .table-hover>tbody>tr:hover>.info, .table-hover>tbody>tr.info:hover>th {
+    background-color: #c4e3f3
+}
+.table>thead>tr>td.warning, .table>tbody>tr>td.warning, .table>tfoot>tr>td.warning, .table>thead>tr>th.warning, .table>tbody>tr>th.warning, .table>tfoot>tr>th.warning, .table>thead>tr.warning>td, .table>tbody>tr.warning>td, .table>tfoot>tr.warning>td, .table>thead>tr.warning>th, .table>tbody>tr.warning>th, .table>tfoot>tr.warning>th {
+    background-color: #fcf8e3
+}
+.table-hover>tbody>tr>td.warning:hover, .table-hover>tbody>tr>th.warning:hover, .table-hover>tbody>tr.warning:hover>td, .table-hover>tbody>tr:hover>.warning, .table-hover>tbody>tr.warning:hover>th {
+    background-color: #faf2cc
+}
+.table>thead>tr>td.danger, .table>tbody>tr>td.danger, .table>tfoot>tr>td.danger, .table>thead>tr>th.danger, .table>tbody>tr>th.danger, .table>tfoot>tr>th.danger, .table>thead>tr.danger>td, .table>tbody>tr.danger>td, .table>tfoot>tr.danger>td, .table>thead>tr.danger>th, .table>tbody>tr.danger>th, .table>tfoot>tr.danger>th {
+    background-color: #f2dede
+}
+.table-hover>tbody>tr>td.danger:hover, .table-hover>tbody>tr>th.danger:hover, .table-hover>tbody>tr.danger:hover>td, .table-hover>tbody>tr:hover>.danger, .table-hover>tbody>tr.danger:hover>th {
+    background-color: #ebcccc
+}
+.table>thead>tr>td {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+}
+.table>thead>tr>td.active {
+    border-bottom: 2px solid #093;
+}
+.table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th, .table-hover>tbody>tr:hover>td>select, .table-hover>tbody>tr:hover>td>textarea {
+    background-color: #f5f5f5
+}
+html.dark .table>thead>tr>td.active {
+    border-bottom: 2px solid #060;
+}
+html.dark .table-bordered>thead>tr>th, html.dark .table-bordered>tbody>tr>th, html.dark .table-bordered>tfoot>tr>th, html.dark .table-bordered>thead>tr>td, html.dark .table-bordered>tbody>tr>td, html.dark .table-bordered>tfoot>tr>td, html.dark .table-bordered {
+    border-color: #424242;
+}
+html.dark .table-hover>tbody>tr:hover>td, html.dark .table-hover>tbody>tr:hover>th, html.dark .table-hover>tbody>tr:hover>td>select, html.dark .table-hover>tbody>tr:hover>td>textarea {
+    background: #252525;
+}
+html.dark .table>tbody>tr>td.success {
+    background: #24351D;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+//prettfy样式
+///////////////////////////////////////////////////////////////////////////////////////////////
+.pln {
+    color: #000
+}
+.str {
+    color: #080
+}
+.kwd {
+    color: #008
+}
+.com {
+    color: #800
+}
+.typ {
+    color: #606;
+}
+.lit {
+    color: #066
+}
+.pun, .opn, .clo {
+    color: #660
+}
+.tag {
+    color: #008;
+}
+.atn {
+    color: #606
+}
+.atv {
+    color: #080
+}
+.dec, .var {
+    color: #606
+}
+.fun {
+    color: red
+}
+pre.prettyprint {
+    font-size: 16px;
+    line-height: 26px;
+    padding: 0 0 0 15px;
+    border: 1px solid #ddd;
+    border-radius: 0px;
+    background: whitesmoke;
+    color: #999;
+}
+ol.linenums {
+    margin-top: 0;
+    margin-bottom: 0;
+    & li {
+        border-left: 1px solid #ddd;
+        min-height: 30px;
+    }
+}
+li.L4, li.L9 {
+    padding: 2px 2px 2px 10px;
+}
+li.L0, li.L1, li.L2, li.L3, li.L5, li.L6, li.L7, li.L8 {
+    padding: 2px 2px 2px 10px;
+    list-style-type: none;
+}
+li.L1, li.L3, li.L5, li.L7, li.L9 {
+    padding: 2px 2px 2px 10px;
+    background: #eee;
+}
+html.dark .pln {
+    color: #ddd;
+}
+html.dark .str {
+    color: #DFCD04;
+}
+html.dark .kwd {
+    color: #FF2A77;
+}
+html.dark .pun, html.dark .opn, html.dark .clo {
+    color: #ddd;
+}
+html.dark .lit {
+    color: #AE81FF;
+}
+html.dark .typ {
+    color: #66D9EF;
+}
+html.dark .com {
+    color: #75715E;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 提示窗口插件 j-Box
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.jBox-content {
+    .input-addon {
+        padding: 10px;
+        width: auto;
+        height: 37px;
+    }
+    .add-item {
+        margin-top: 10px;
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 百度搜索框
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+#bdcs-search-form, html.dark #bdcs-search-form {
+    margin-top: 3px;
+}
+#bdcs-search-form-input, html.dark #bdcs-search-form-input {
+    background: white;
+    height: 33px;
+    padding: 0 10px;
+    color: #333;
+    border-color: #ccc;
+}
+#bdcs-search-form-submit, html.dark #bdcs-search-form-submit {
+    height: 33px;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 输入框组
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.input-group {
+    position: relative;
+    display: table;
+}
+.input-addon:first-child {
+    border-right: none;
+}
+.input-addon:last-child {
+    border-left: none;
+}
+.input-addon {
+    vertical-align: middle;
+    display: table-cell;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    background: whitesmoke;
+    width: 1%;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+/* 编辑框样式 */
+.edit-box {
+    //预览框
+    .preview {
+        word-wrap: break-word;
+        display: none;
+    }
+    .preview.border-bottom {
+        border: 1px dotted #ccc;
+    }
+    .preview.border-right {
+    }
+    //数据框
+    textarea {
+        min-height: 200px;
+        word-wrap: break-word;
+        outline: none;
+    }
+    //工具栏
+    .tool-bar {
+        background: #f6f6f6;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        @include user-select(none);
+        .i {
+            position: relative;
+            height: 30px;
+            line-height: 30px;
+            padding: 0 15px;
+            cursor: hand;
+            cursor: pointer;
+            color: #444;
+            &:hover {
+                background: white;
+            }
+        }
+        ul {
+            position: absolute;
+            top: 30px;
+            left: 0;
+            display: none;
+            list-style: none;
+            border: 1px solid #ccc;
+            border-top: none;
+            z-index: 2;
+            background: #f6f6f6;
+            padding: 0;
+            li {
+                width: 60px;
+                text-align: center;
+                &:hover {
+                    background: white;
+                }
+            }
+        }
+        table {
+            display: none;
+            position: absolute;
+            left: 0;
+            top: 30px;
+            z-index: 3;
+            tr td {
+                border: 1px solid #ccc;
+                background: white;
+            }
+            td.active {
+                background: #eee;
+            }
+            td.error {
+                background: #FFD5D5;
+            }
+        }
+    }
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// dropzone上传组件
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.dz-preview {
+    display: none;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// avalon
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+[ms-controller] {
+    visibility: hidden;
+    display: none;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+//步骤控件
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.ui.steps .step {
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+    margin: 0em 0em;
+    padding: 10px 30px;
+    background: #ffffff;
+    color: rgba(0, 0, 0, 0.8);
+    box-shadow: 0px 0px 0px 1px #d4d4d5;
+    border-radius: 0em;
+}
+.ui.steps .step:after {
+    position: absolute;
+    z-index: 2;
+    content: '';
+    top: 50%;
+    right: 0em;
+    border: medium none;
+    background-color: #ffffff;
+    width: 25px;
+    height: 25px;
+    border-bottom: 1px solid rgba(39, 41, 43, 0.15);
+    border-right: 1px solid rgba(39, 41, 43, 0.15);
+    -webkit-transform: translateY(-50%) translateX(50%) rotate(-45deg);
+    -ms-transform: translateY(-50%) translateX(50%) rotate(-45deg);
+    transform: translateY(-50%) translateX(50%) rotate(-45deg);
+}
+.ui.steps .step, .ui.steps .step:after {
+    -webkit-transition: background-color 0.2s ease, opacity 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    transition: background-color 0.2s ease, opacity 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+.ui.steps {
+    display: table;
+    table-layout: fixed;
+    background: '';
+    box-shadow: '';
+    line-height: 1.142rem;
+    box-sizing: border-box;
+    border-radius: 0.2857rem;
+}
+.ui.steps .step:first-child {
+    padding-left: 1.5em;
+    border-radius: 0.2857rem 0em 0em 0.2857rem;
+}
+.ui.steps .step:last-child {
+    border-radius: 0em 0.2857rem 0.2857rem 0em;
+}
+.ui.steps .step:only-child {
+    border-radius: 0.2857rem;
+}
+.ui.steps .step:last-child {
+    margin-right: 0em;
+}
+.ui.steps .step:last-child:after {
+    display: none;
+}
+.ui.steps .disabled.step {
+    cursor: auto;
+    background: #ffffff;
+    pointer-events: none;
+}
+.ui.steps .disabled.step, .ui.steps .disabled.step .title, .ui.steps .disabled.step .description {
+    color: rgba(40, 40, 40, 0.3);
+}
+.ui.steps .disabled.step:after {
+    background: #ffffff;
+}
+.ui.steps .step.active {
+    cursor: auto;
+    background: #f0f0f0;
+}
+.ui.steps .step.active:after {
+    background: #f0f0f0;
+}
+.ui.steps .step.active .title {
+    color: #009fda;
+}
+.ui.ordered.steps .step.active:before, .ui.steps .active.step .icon {
+    color: rgba(0, 0, 0, 0.85);
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// contextMenu
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+.context-menu-list {
+    @include box-shadow(2px 3px 2px #999);
+    border: 1px solid #ccc;
+}
+.context-menu-item {
+    background: white !important;
+    padding: 5px 5px 5px 20px !important;
+    &:hover {
+        color: white !important;
+        background: #369 !important;
+    }
+    &.disabled {
+        color: #bbb !important;
+    }
+}
+.jBox-Confirm-button-submit {
+    background: #5CB85C;
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+// 超级表格操作
+///////////////////////////////////////////////////////////////////////////////////////////////
+#temp-table {
+    //正在排序的表题
+    .sort {
+        border-bottom: 3px solid green;
+    }
+    //更新输入框
+    .update {
+        border: none;
+        height: 43px;
+        width: 100%;
+        font-size: 16px;
+    }
+    //此表格内容也不换行
+    table tbody {
+        white-space: nowrap;
+    }
+    //搜索框
+    .input-addon {
+        padding: 10px;
+        width: auto;
+        height: 37px;
+    }
+    .search {
+        width: 200px;
+        height: 37px;
+    }
+    //新增按钮
+    .add {
+        height: 37px;
+    }
+    //表格内的选择框
+    .select {
+        border: none;
+        width: 100%;
+        height: 43px;
+    }
+}
