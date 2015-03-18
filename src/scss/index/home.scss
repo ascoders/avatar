@@ -1,9 +1,36 @@
-#home {
+#index {
+	.input-addon {
+		background: whitesmoke;
+		width: auto;
+		line-height: 31px;
+	}
+	.input {
+		width: 300px;
+		height: 33px;
+	}
 	.bar {
 		background: #28966F;
 		color: #F0FFFB;
 		padding: 10px;
 		font-size: 14px;
+	}
+	.bar-title {
+		padding: 5px 10px;
+		background: #eee;
+	}
+	.bar-content {
+		display: block;
+		color: #333;
+		padding: 7px 10px;
+		border-top: 1px solid #eee;
+		&:hover {
+			text-decoration: none;
+			background: #EEF8ED;
+		}
+		&.active {
+			border-left: 3px solid #28966F;
+			padding-left: 7px;
+		}
 	}
 	.box {
 		background: white;
@@ -12,6 +39,7 @@
 		color: #333;
 		font-size: 15px;
 		position: relative;
+		height: 51px;
 		&:hover {
 			text-decoration: none;
 			background: #EEF8ED;
@@ -31,18 +59,30 @@
 			left: 10px;
 			top: 10px;
 		}
-	}
-	.tag {
-		font-size: 14px;
-		padding: 3px 5px;
-		color: white;
-		margin-right: 3px;
-	}
-	.tag-category {
-		background: #28966F;
-	}
-	.tag-good {
-		background: #337AB7;
+		.tag {
+			font-size: 14px;
+			padding: 3px 5px;
+			color: white;
+			margin-right: 3px;
+		}
+		.tag-category {
+			background: #28966F;
+		}
+		.tag-good {
+			background: #337AB7;
+		}
+		.tag-top {
+			background: #285896;
+		}
+		.status {
+			padding: 1px 5px;
+			color: white;
+			background: #28966F;
+		}
+		.last-reply-img {
+			width: 16px;
+			height: 16px;
+		}
 	}
 	.logo-img {
 		width: 210px;
@@ -50,5 +90,14 @@
 	.bar-btn {
 		display: block;
 		font-size: 20px;
+	}
+	.tag {
+		background: #318CA4;
+		&.active {
+			color: yellow;
+		}
+	}
+	.link-bar {
+		padding: 5px;
 	}
 }

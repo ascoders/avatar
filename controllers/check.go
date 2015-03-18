@@ -108,7 +108,9 @@ func (this *CheckController) Register() {
 func (this *CheckController) CurrentUser() {
 	ok, data := func() (bool, interface{}) {
 		//这个条件仅供测试用
-		//this.SetSession("ID", "54dc26103680350d9c000002")
+		if beego.RunMode == "dev" {
+			this.SetSession("ID", "54dc26103680350d9c000002")
+		}
 
 		//是否存在session
 		if this.GetSession("ID") == nil || this.GetSession("ID").(string) == "" {

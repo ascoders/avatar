@@ -33,6 +33,12 @@ func init() {
 		beego.NSNamespace("/article",
 			//新增
 			beego.NSRouter("/add", &controllers.ArticleController{}, "post:Add"),
+			//编辑
+			beego.NSRouter("/edit", &controllers.ArticleController{}, "post:Edit"),
+			// 删除
+			beego.NSRouter("/delete", &controllers.ArticleController{}, "post:Delete"),
+			// 置顶
+			beego.NSRouter("/top", &controllers.ArticleController{}, "post:Top"),
 			//获得文章列表
 			beego.NSRouter("/list", &controllers.ArticleController{}, "post:List"),
 			//查询某个文章信息
@@ -48,6 +54,26 @@ func init() {
 			beego.NSRouter("/user", &controllers.UserController{}, "post:User"),
 			//获取用户热评和被忽视的文章
 			beego.NSRouter("/getHotCold", &controllers.UserController{}, "post:GetHotCold"),
+		),
+		//七牛图片处理模块
+		beego.NSNamespace("/qiniu",
+			//获取首页内容
+			beego.NSRouter("/createUpToken", &controllers.QiniuController{}, "post:CreateUpToken"),
+		),
+		//标签
+		beego.NSNamespace("/tag",
+			//绑定标签
+			beego.NSRouter("/bind", &controllers.TagController{}, "post:Bind"),
+			//解绑标签
+			beego.NSRouter("/unBind", &controllers.TagController{}, "post:UnBind"),
+			//提示推荐标签
+			beego.NSRouter("/searchTag", &controllers.TagController{}, "post:SearchTag"),
+			//获取标签列表
+			beego.NSRouter("/getList", &controllers.TagController{}, "post:GetList"),
+			//获取前30个热门标签
+			beego.NSRouter("/hot", &controllers.TagController{}, "post:Hot"),
+			//相似标签
+			beego.NSRouter("/same", &controllers.TagController{}, "post:Same"),
 		),
 	))
 }

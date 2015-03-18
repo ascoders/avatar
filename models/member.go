@@ -13,7 +13,9 @@ type Member struct {
 	Token         string        `bson:"to" json:"to" form:"to"` // github对应token
 	ArticleNumber int           `bson:"a" json:"a" form:"a"`    // 文章发表量
 	ReplyNumber   int           `bson:"r" json:"r" form:"r"`    // 评论数量
+	UploadSize    int64         `bson:"u" json:"u" form:"u"`    // 上传量
 	Time          time.Time     `bson:"t" json:"t" form:"t"`    // 注册时间
+	Admin         bool          `bson:"ad" json:"ad" form:"ad"` // 是否为管理员
 }
 
 /* 根据ObjectId查询某个用户信息 */
@@ -58,4 +60,13 @@ func (this *Member) AddArticleNumber() {
 /* 增加评论量 */
 func (this *Member) AddReplyNumber() {
 	Db.C("member").Update(bson.M{"_id": this.Id}, bson.M{"$inc": bson.M{"r": 1}})
+}
+
+/* 保存 */
+func (this *Member) Save() {
+	colQuerier := bson.M{"_id": this.Id}
+	err := Db.C("member").Update(colQuerier, this)
+	if err != nil {
+		//处理错误
+	}
 }

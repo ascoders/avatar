@@ -10,13 +10,18 @@ type Reply struct {
 	Article bson.ObjectId `bson:"a" json:"a" form:"a"`       // 所属文章id
 	Uid     bson.ObjectId `bson:"u" json:"u" form:"u"`       // 所有者id
 	Uimage  string        `bson:"ui" json:"ui" form:"ui"`    // 【冗余】所有者头像
+	Uname   string        `bson:"un" json:"un" form:"un"`    // 【冗余】所有者昵称
 	Content string        `bson:"co" json:"co" form:"co"`    // 内容
 	Time    time.Time     `bson:"tm" json:"tm" form:"tm"`    // 发布日期
 }
 
+/* 获取id */
+func (this *Reply) GetId() {
+	this.Id = bson.NewObjectId()
+}
+
 /* 插入评论 */
 func (this *Reply) Reply() (bool, interface{}) {
-	this.Id = bson.NewObjectId()
 	this.Time = time.Now()
 
 	err := Db.C("reply").Insert(this)
@@ -51,4 +56,12 @@ func (this *Reply) Insert() (bool, interface{}) {
 	}
 
 	return true, this.Id
+}
+
+/* 删除某个帖子下全部回复和评论 */
+func (this *Reply) DeletArticleReply(article bson.ObjectId) {
+	_, err := Db.C("reply").RemoveAll(bson.M{"a": article})
+	if err != nil {
+		return
+	}
 }

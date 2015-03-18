@@ -17,12 +17,18 @@ type Article struct {
 	Content  string        `bson:"co" json:"co" form:"co"`    // 正文内容
 	Views    uint32        `bson:"v" json:"v" form:"v"`       // 浏览量
 	Reply    uint32        `bson:"r" json:"r" form:"r"`       // 回复量
+	Tag      []string      `bson:"ta" json:"ta" form:"ta"`    //标签
 	Time     time.Time     `bson:"tm" json:"tm" form:"tm"`    // 发布日期
+	Top      int           `bson:"tp" json:"tp" form:"tp"`    // 置顶
+}
+
+/* 获取id */
+func (this *Article) GetId() {
+	this.Id = bson.NewObjectId()
 }
 
 /* 插入文章 */
 func (this *Article) Insert() (bool, interface{}) {
-	this.Id = bson.NewObjectId()
 	this.Time = time.Now()
 
 	err := Db.C("article").Insert(this)
@@ -43,9 +49,17 @@ func (this *Article) Find(category int, from int, number int) []*Article {
 	var result []*Article
 	//如果category为-1，则查询全部总数
 	if category == -1 {
-		Db.C("article").Find(nil).Select(bson.M{"co": 0}).Sort("-tm").Skip(from).Limit(number).All(&result)
+		Db.C("article").Find(bson.M{"tp": 0}).Select(bson.M{"co": 0}).Sort("-tm").Skip(from).Limit(number).All(&result)
 	} else {
-		Db.C("article").Find(bson.M{"c": category}).Select(bson.M{"co": 0}).Sort("-tm").Skip(from).Limit(number).All(&result)
+		Db.C("article").Find(bson.M{"c": category, "tp": 0}).Select(bson.M{"co": 0}).Sort("-tm").Skip(from).Limit(number).All(&result)
+	}
+
+	// 如果form为0，查询置顶文章
+	if from == 0 {
+		var top []*Article
+		Db.C("article").Find(bson.M{"tp": bson.M{"$gt": 0}}).Select(bson.M{"co": 0}).Sort("-tp").All(&top)
+
+		result = append(top, result...)
 	}
 
 	return result
@@ -104,4 +118,69 @@ func (this *Article) FindUserCold(id bson.ObjectId) []*Article {
 	var result []*Article
 	Db.C("article").Find(bson.M{"u": id, "r": 0}).Select(bson.M{"co": 0}).Limit(10).All(&result)
 	return result
+}
+
+// 更新内容
+func (this *Article) UpdateContent() {
+	Db.C("article").Update(bson.M{"_id": this.Id}, bson.M{"$set": bson.M{"co": this.Content}})
+}
+
+// 设置置顶数
+func (this *Article) SetTop() {
+	count, _ := Db.C("article").Find(bson.M{"tp": bson.M{"$gt": 0}}).Count()
+
+	this.Top = count + 1
+}
+
+// 更新置顶参数
+func (this *Article) UpdateTop() {
+	Db.C("article").Update(bson.M{"_id": this.Id}, bson.M{"$set": bson.M{"tp": this.Top}})
+}
+
+// 新增标签
+func (this *Article) AddTag(name string) {
+	Db.C("article").Update(bson.M{"_id": this.Id},
+		bson.M{"$push": bson.M{
+			"ta": name,
+		}})
+}
+
+// 删除标签
+func (this *Article) RemoveTag(name string) {
+	Db.C("article").Update(bson.M{"_id": this.Id},
+		bson.M{"$pull": bson.M{
+			"ta": name,
+		}})
+}
+
+// 查询拥有相同标签的文章
+func (this *Article) Same() []*Article {
+	var r []*Article
+
+	Db.C("article").Find(bson.M{"ta": bson.M{"$in": this.Tag}, "_id": bson.M{"$ne": this.Id}}).Limit(10).All(&r)
+
+	return r
+}
+
+// 根据标签查询列表
+func (this *Article) FindByTag(tag string, from int, number int) []*Article {
+	var result []*Article
+
+	//查询指定范围内帖子
+	err := Db.C("article").Find(bson.M{"ta": tag}).Sort("-tm").Skip(from).Limit(number).All(&result)
+
+	if err != nil {
+		return nil
+	}
+	return result
+}
+
+// 查询指定游戏某标签的话题数
+func (this *Article) FindTagCount(tag string) int {
+	count, err := Db.C("article").Find(bson.M{"ta": tag}).Count()
+	if err == nil {
+		return int(count)
+	} else {
+		return 0
+	}
 }

@@ -27,17 +27,19 @@ avalon.filters.cleanmark = function (str) { //str为管道符之前计算得到�
 
 require.config({
 	paths: {
-		"jquery": "http://cdn.bootcss.com/jquery/2.1.3/jquery.min",
+		"jquery": "http://cdn.bootcss.com/jquery/1.11.2/jquery.min",
 		"jquery.timeago": "http://cdn.bootcss.com/jquery-timeago/1.4.0/jquery.timeago.min", //友好时间
 		"jquery.ui": "http://cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min", //jquery-ui
 		"jquery.autosize": "http://cdn.bootcss.com/autosize.js/1.18.15/jquery.autosize.min", //textarea大小自适应高度
 		"jquery.selection": "http://cdn.bootcss.com/jquery.selection/1.0.1/jquery.selection.min", //表单选择
 		"jquery.qrcode": "http://cdn.bootcss.com/jquery.qrcode/1.0/jquery.qrcode.min", //二维码
 		"jquery.cookie": "http://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie", //操作cookie
+		"jquery.autocomplete": "http://cdn.bootcss.com/jquery.devbridge-autocomplete/1.2.7/jquery.devbridge-autocomplete.min", //输入框自动补全
 		"dropzone": "http://cdn.bootcss.com/dropzone/3.12.0/dropzone-amd-module.min", //拖拽上传
 		"prettify": "http://cdn.bootcss.com/prettify/r298/prettify.min", //code美化
 		"chart": "http://cdn.bootcss.com/Chart.js/1.0.1-beta.2/Chart.min", //表格
 		"md5": "http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min", //md5加密
+		"jquery.tree": "jquery.treeview", //tree树状结构
 		"jquery.typetype": "jquery.typetype", //模拟输入
 		"jquery.taboverride": "taboverride", //tab键变为缩进
 		"contextMenu": "jquery.contextMenu", //右键菜单
@@ -146,24 +148,31 @@ function post(url, params, success, error, callback, errorback) {
 			_xsrf: xsrftoken
 		};
 		postParam = $.extend(postParam, params);
-		return $.post(url, postParam, function (data) {
-			if (data.ok) { //操作成功
-				if (success !== null) {
-					notice(success, 'green');
+
+		return $.ajax({
+				url: url,
+				type: 'POST',
+				traditional: true, //为了传数组
+				data: postParam,
+			})
+			.done(function (data) {
+				if (data.ok) { //操作成功
+					if (success !== null) {
+						notice(success, 'green');
+					}
+					//执行回调函数
+					if (callback != null) {
+						callback(data.data);
+					}
+				} else { //操作失败
+					if (error !== null) {
+						notice(error + data.data, 'red');
+					}
+					if (errorback != null) {
+						errorback(data.data);
+					}
 				}
-				//执行回调函数
-				if (callback != null) {
-					callback(data.data);
-				}
-			} else { //操作失败
-				if (error !== null) {
-					notice(error + data.data, 'red');
-				}
-				if (errorback != null) {
-					errorback(data.data);
-				}
-			}
-		});
+			});
 	});
 }
 
@@ -296,28 +305,20 @@ function subStr(str, start, end) {
 //dropzone统一外包一层规范
 function createDropzone(obj, url, params, accept, callback) {
 	require(['jquery', 'dropzone', 'md5', 'jquery.jbox'], function ($, Dropzone, md5) {
-		//获取xsrftoken
-		var xsrf, xsrflist;
-		xsrf = $.cookie("_xsrf"), xsrflist = xsrf.split("|");
-
-		var opts = {
-			_xsrf: Base64.decode(xsrflist[0]),
-		};
-		opts = $.extend(opts, params);
-
 		//上传框组
-		var modals = new Array();
+		var modals = {};
 
 		//实例化dropzone
-		var myDropzone = new Dropzone(obj, {
+		return new Dropzone(obj, {
 			url: url,
 			maxFiles: 10,
 			maxFilesize: 0.5,
-			params: opts,
+			method: 'post',
 			acceptedFiles: accept,
+			autoProcessQueue: false,
 			init: function () {
 				//事件监听
-				this.on("thumbnail", function (file, img) { //文件内容,缩略图base64
+				this.on("addedfile", function (file) {
 					//实例化上传框
 					modals[md5(file.name)] = new jBox('Notice', {
 						attributes: {
@@ -325,7 +326,6 @@ function createDropzone(obj, url, params, accept, callback) {
 							y: 'bottom'
 						},
 						title: '上传 ' + file.name + ' 中..',
-						content: '<img src="' + img + '"><br><div class="progress" style="margin:10px 0 0 0"><div class="progress-bar" id="upload' + md5(file.name) + '" style="min-width:5%;">0%</div></div><br>尺寸: ' + file.width + ' × ' + file.height + ' &nbsp;&nbsp;大小: ' + (file.size / 1000).toFixed(1) + ' Kb<br>',
 						theme: 'NoticeBorder',
 						color: 'black',
 						animation: {
@@ -338,62 +338,76 @@ function createDropzone(obj, url, params, accept, callback) {
 							this.destroy();
 						},
 					});
+
+					var _this = this;
+
+					//获取上传到七牛的token
+					post('/api/qiniu/createUpToken', params, null, '', function (data) {
+						_this.options.params['token'] = data;
+
+						// 开始上传
+						_this.processQueue();
+					}, function () { //失败撤销上传框
+						modals[md5(file.name)].close();
+					});
 				});
-				this.on("error", function (file, err) {
-					notice(err, 'red');
-					//如果thumbnail还未执行，则退出
-					if (modals[md5(file.name)] == null) {
+				this.on("thumbnail", function (file, img) { //文件内容,缩略图base64
+					//如果模态框被关闭,return
+					if (!modals[md5(file.name)]) {
 						return;
 					}
+
+					// 给缩略图赋值
+					modals[md5(file.name)].setContent('<img src="' + img + '"><br><div class="progress" style="margin:10px 0 0 0"><div class="progress-bar" id="upload' + md5(file.name) + '" style="min-width:5%;">0%</div></div><br>尺寸: ' + file.width + ' × ' + file.height + ' &nbsp;&nbsp;大小: ' + (file.size / 1000).toFixed(1) + ' Kb<br>');
+				});
+				this.on("error", function (file, err) {
+					notice(err.toString(), 'red');
+
+					//如果模态框被关闭,return
+					if (!modals[md5(file.name)]) {
+						return;
+					}
+
 					//模态框关闭
 					modals[md5(file.name)].close();
 					modals[md5(file.name)] = null;
 				});
 				this.on("uploadprogress", function (file, process, size) {
-					//如果thumbnail还未执行，则退出
-					if (modals[md5(file.name)] == null) {
+					//如果模态框被关闭,return
+					if (!modals[md5(file.name)]) {
 						return;
 					}
+
+					process = process.toFixed(2);
 
 					if (process == 100) {
 						process = 99;
 					}
 
-					$('#upload' + md5(file.name)).animate({
-							width: process + "%"
-						}, 200)
-						.text(process + '%');
+					$('#upload' + md5(file.name)).css('width', process + "%").text(process + '%');
 				});
 				this.on("success", function (file, data) {
-					$('#upload' + md5(file.name)).animate({
-							width: "100%"
-						}, 200)
-						.text('100%');
+					notice('上传成功', 'green');
+
+					//如果模态框被关闭,return
+					if (!modals[md5(file.name)]) {
+						return;
+					}
+
+					$('#upload' + md5(file.name)).css('width', "100%").text('100%');
 
 					setTimeout(function () {
-						//如果thumbnail还未执行，则退出
-						if (modals[md5(file.name)] == null) {
+						//如果模态框被关闭,return
+						if (!modals[md5(file.name)]) {
 							return;
 						}
 						//模态框关闭
 						modals[md5(file.name)].close();
 						modals[md5(file.name)] = null;
-					}, 1000);
+					}, 200);
 
 					//触发回调
 					callback(data, file);
-				});
-				this.on("complete", function (file) {
-					/*
-					//如果thumbnail还未执行，则退出
-					if (modals[md5(file.name)] == null) {
-						return;
-					}
-					//模态框关闭
-					modals[md5(file.name)].close();
-					modals[md5(file.name)] = null;
-					notice('未登录', 'red');
-					*/
 				});
 			}
 		});
@@ -529,6 +543,7 @@ var global = avalon.define({
 	$id: "global",
 	my: {}, // 我的信息
 	myLogin: false, // 是否已登陆
+	avalon: {},
 	temp: {
 		myDeferred: null, // 我的信息执行状态
 		state: '', //当前状态
@@ -577,6 +592,16 @@ require(['jquery', 'mmState'], function ($) {
 		global.temp.myDeferred.resolve(); // 信息获取完毕 用户未登录
 	});
 
+	//获取avalon信息
+	$.ajax({
+		url: 'https://api.github.com/repos/RubyLouvre/avalon',
+		type: 'GET',
+		dataType: "jsonp",
+	}).done(function (data) {
+		global.avalon = data.data;
+	});
+
+
 	//找不到的页面跳转到404
 	avalon.router.error(function () {
 		avalon.router.navigate('/404');
@@ -617,8 +642,11 @@ require(['jquery', 'mmState'], function ($) {
 		},
 		onChange: function () {
 			var _this = this;
-			require(['../index/index.js'], function (index) {
-				index.onChange(_this);
+			var done = this.async();
+
+			require(['../index/index.js'], function (self) {
+				self.onChange(_this);
+				done();
 			});
 		},
 		onAfterLoad: function () {

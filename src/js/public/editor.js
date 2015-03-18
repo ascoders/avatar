@@ -31,6 +31,15 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 		//记录上一刻鼠标Y轴位置
 		var lastY;
 
+		//渲染模式
+		var render = 0; //0:实时渲染 1:延时渲染
+
+		//判断渲染模式数组，每3次取一个平均值判断是否渲染过慢
+		var renderTime = new Array();
+
+		//延时渲染的timeout
+		var renderTimeout = null;
+
 		//tabOverride.tabSize(4).autoIndent(true).set(_this); //tab键
 
 		//是否支持markdown
@@ -48,83 +57,112 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			"list-ol": "有序列表",
 			"list-ul": "无序列表",
 			"minus": "分割线",
+			"image": "图片",
 			"table": "表格"
 		};
 
-		for (var key in buttons) {
+		this.createDom = function () { // 刷新dom
+			for (var key in buttons) {
+				var button = $("<div/>")
+					.addClass('i f-hvc effect fa fa-' + key)
+					.attr('type', key)
+					.appendTo(tools);
+
+				button.jBox('Tooltip', {
+					content: buttons[key]
+				});
+				switch (key) {
+				case 'header':
+					button.addClass('j-ul-list');
+					var ul = $("<ul/>").appendTo(button).addClass('f-bln');
+					var headers = [
+					"h1", "h2", "h3", "h4", "h5", "h6"
+				];
+					for (var item in headers) {
+						var li = $("<li/>").appendTo(ul).addClass('effect');
+						li.text(headers[item]).attr("type", headers[item]);
+					}
+					break;
+				case 'table':
+					button.addClass('j-table').removeAttr('type');
+					var table = $("<table/>").appendTo(button);
+					for (var i = 0; i < 6; i++) {
+						var tr = $("<tr/>").appendTo(table);
+						for (var j = 0; j < 6; j++) {
+							var td = $("<td/>").appendTo(tr).addClass('effect').attr('type', 'table');
+						}
+					}
+					break;
+				case 'image': //图片上传
+					createDropzone(button[0], 'http://upload.qiniu.com', opts.uploadParams, ".jpg,.jpeg,.png,.gif,.ico", function (data, file) {
+						_this.selection('insert', {
+							text: '\n![' + file.name + '](http://avatar.img.wokugame.com/' + data.name + ')',
+							mode: 'before'
+						});
+						//刷新视图
+						_this.freshPreview();
+					});
+
+					break;
+				}
+			}
+
+			//右侧标注
 			var button = $("<div/>")
-				.addClass('i f-hvc effect fa fa-' + key)
-				.attr('type', key)
+				.addClass('i effect fa fa-maxcdn f-fr')
+				.attr('id', 'markdown-enable')
 				.appendTo(tools);
 
 			button.jBox('Tooltip', {
-				content: buttons[key]
+				content: "markdown 语法支持"
 			});
-			switch (key) {
-			case 'header':
-				button.addClass('j-ul-list');
-				var ul = $("<ul/>").appendTo(button).addClass('f-bln');
-				var headers = [
-						"h1", "h2", "h3", "h4", "h5", "h6"
-					];
-				for (var item in headers) {
-					var li = $("<li/>").appendTo(ul).addClass('effect');
-					li.text(headers[item]).attr("type", headers[item]);
-				}
-				break;
-			case 'table':
-				button.addClass('j-table').removeAttr('type');
-				var table = $("<table/>").appendTo(button);
-				for (var i = 0; i < 6; i++) {
-					var tr = $("<tr/>").appendTo(table);
-					for (var j = 0; j < 6; j++) {
-						var td = $("<td/>").appendTo(tr).addClass('effect').attr('type', 'table');
-					}
-				}
-				break;
-			case 'image': //图片上传
-
-				break;
-			}
 		}
 
-		//右侧标注
-		var button = $("<div/>")
-			.addClass('i effect fa fa-maxcdn f-fr')
-			.attr('id', 'markdown-enable')
-			.appendTo(tools);
+		/* --------------- createDom end -------------------- */
 
-		button.jBox('Tooltip', {
-			content: "markdown 语法支持"
-		});
 		//响应下拉菜单工具
-		$(".j-ul-list").hover(function () {
-			$(this).find("ul").show();
-		}, function () {
-			$(this).find("ul").hide();
+		$(document).on('mouseenter mouseleave', ".j-ul-list", function (e) {
+			switch (e.type) {
+			case 'mouseenter':
+				$(this).find("ul").show();
+				break;
+			case 'mouseleave':
+				$(this).find("ul").hide();
+				break;
+			}
 		});
 
 		//响应表格下拉列表
-		$(".j-table").hover(function () {
-			$(this).find("table").show();
-		}, function () {
-			$(this).find("table").hide();
+		$(document).on('mouseenter mouseleave', ".j-table", function (e) {
+			switch (e.type) {
+			case 'mouseenter':
+				$(this).find("table").show();
+				break;
+			case 'mouseleave':
+				$(this).find("table").hide();
+				break;
+			}
 		});
 
-		//响应每个表格hover
-		$(".j-table td").hover(function () {
-			$(this).parent().parent().find("td").removeClass('active error');
-			var col = $(this).index();
-			var row = $(this).parent().index();
-			var clas = 'active';
-			if (col == 0 || row == 0) {
-				clas = 'error';
+		$(document).on('mouseenter mouseleave', ".j-table .effect", function (e) {
+			var _this = this;
+			switch (e.type) {
+			case 'mouseenter':
+				$(_this).parent().parent().find("td").removeClass('active error');
+				var col = $(_this).index();
+				var row = $(_this).parent().index();
+				var clas = 'active';
+				if (col == 0 || row == 0) {
+					clas = 'error';
+				}
+				$(_this).parent().parent().find("tr:lt(" + (row + 1) + ")").each(function () {
+					$(this).find("td:lt(" + (col + 1) + ")").addClass(clas);
+				});
+				break;
+			case 'mouseleave':
+				$(_this).parent().parent().find("td").removeClass('active error');
+				break;
 			}
-			$(this).parent().parent().find("tr:lt(" + (row + 1) + ")").each(function () {
-				$(this).find("td:lt(" + (col + 1) + ")").addClass(clas);
-			});
-		}, function () {
-			$(this).parent().parent().find("td").removeClass('active error');
 		});
 
 		//点击工具按钮
@@ -320,6 +358,7 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			_this.freshPreview();
 		});
 
+		//设置markdown解析格式
 		marked.setOptions({
 			gfm: true,
 			tables: true,
@@ -352,16 +391,15 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 				return;
 			}
 
-			preview.html(marked(_this.val()));
+			if (render == 0) { //实时渲染
+				_this.doRender();
+			} else if (render == 1) { //延时渲染
+				if (renderTimeout != null) {
+					clearTimeout(renderTimeout); //每次有输入都清除timeout执行
+				}
 
-			//代码高亮
-			$('pre').addClass('prettyprint pre-scrollable linenums');
-			prettify.prettyPrint();
-
-			preview.show();
-
-			//编辑区刷新高度
-			_this.trigger('autosize.resize');
+				renderTimeout = setTimeout(_this.doRender, 300);
+			}
 
 			//如果视图高于500px，改变显示方式
 			if (preview.height() > 500) {
@@ -381,6 +419,45 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 
 				//预览框父级同步高度为自由
 				previewBox.css('height', 'auto');
+			}
+
+			preview.show();
+
+			//编辑区刷新高度
+			_this.trigger('autosize.resize');
+		}
+
+		this.doRender = function () { //执行渲染，耗时
+			//计算代码耗时：开始
+			var start = new Date().getTime();
+
+			preview.html(marked(_this.val()));
+
+			//代码高亮
+			$('pre').addClass('prettyprint pre-scrollable linenums');
+			prettify.prettyPrint();
+
+			//计算代码耗时：结束
+			var end = new Date().getTime();
+
+			//计算平均耗时
+			var cost = 0;
+			renderTime.push(end - start);
+
+			if (renderTime.length > 3) {
+				//计算平均耗时
+				cost = (renderTime[0] + renderTime[1] + renderTime[2]) / 3;
+
+				renderTime = [];
+
+				//时差大于30毫秒判定为执行缓慢
+				if (cost > 30 && render < 1) {
+					notice('文档过长，切换到延时渲染');
+					render = 1;
+				} else if (cost < 15 && render != 0) {
+					notice('恢复实时渲染');
+					render = 0;
+				}
 			}
 		}
 
@@ -438,7 +515,10 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 					});
 				}
 			}
-			_this.freshPreview();
+
+			if (e.type == "keyup") {
+				_this.freshPreview();
+			}
 		});
 
 		//预览框父级鼠标点击
@@ -513,7 +593,7 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			if (box.offset().top - $(window).scrollTop() <= 0) { //按钮接触到了顶部以下
 
 				if ($(window).scrollTop() - _this.offset().top - _this.height() > -200) { //如果距离编辑框底部太短，编辑框不会跟随移动
-					tools.css("position", "absolute").css("top", (_this.height() + 322) + "px");
+					tools.css("position", "absolute").css("top", (_this.height() + _this.offset().top - 350) + "px");
 				} else {
 					tools.css("position", "fixed").css("top", "0").css("width", (box.width() + 1) + "px");
 				}

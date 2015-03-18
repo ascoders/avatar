@@ -1,0 +1,76 @@
+#doc {
+	.g-hd, .g-sd, .g-mn, .g-ft {
+		position: absolute;
+		left: 0;
+	}
+	.g-hd, .g-ft {
+		width: 100%;
+	}
+	.g-sd, .g-mn {
+		top: 40px;
+		bottom: 40px;
+		_height: 100%;
+		overflow: auto;
+	}
+	.g-hd {
+		top: 0;
+		height: 100px;
+	}
+	.g-sd {
+		width: 250px;
+	}
+	.g-mn {
+		_position: relative;
+		left: 250px;
+		right: 0;
+		_top: 0;
+		_left: 0;
+		_margin-left: 250px;
+	}
+	//文档样式
+	.doc-sd {
+		background: #DCF5EC;
+	}
+	.doc-mn {
+		background: white;
+	}
+	//左边树状结构
+	#tree {
+		padding: 0;
+		.treeul {
+			padding-left: 0;
+		}
+		.folder {
+			padding: 10px;
+			background: #28966F;
+			display: block;
+			cursor: pointer;
+			cursor: hand;
+			user-select: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			color: white;
+			&:hover {
+				background: #278F6A;
+			}
+		}
+		.file {
+			padding: 10px 10px 10px 20px;
+			background: #65A991;
+			display: block;
+			cursor: pointer;
+			cursor: hand;
+			user-select: none;
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			color: white;
+			&:hover {
+				background: #5E9B85;
+				text-decoration: none;
+			}
+		}
+		ul {
+			list-style: none;
+		}
+	}
+}
