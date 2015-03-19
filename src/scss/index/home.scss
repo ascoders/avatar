@@ -59,19 +59,25 @@
 			left: 10px;
 			top: 10px;
 		}
-		.tag {
+		.tag-category {
 			font-size: 14px;
 			padding: 3px 5px;
 			color: white;
 			margin-right: 3px;
-		}
-		.tag-category {
 			background: #28966F;
 		}
 		.tag-good {
+			font-size: 14px;
+			padding: 3px 5px;
+			color: white;
+			margin-right: 3px;
 			background: #337AB7;
 		}
 		.tag-top {
+			font-size: 14px;
+			padding: 3px 5px;
+			color: white;
+			margin-right: 3px;
 			background: #285896;
 		}
 		.status {
@@ -91,13 +97,72 @@
 		display: block;
 		font-size: 20px;
 	}
-	.tag {
+	.tag-tag {
 		background: #318CA4;
+		font-size: 14px;
+		padding: 3px 5px;
+		color: white;
+		margin-right: 3px;
 		&.active {
 			color: yellow;
 		}
 	}
 	.link-bar {
 		padding: 5px;
+	}
+	.friend {
+		.box {
+			display: inline-block;
+			width: auto;
+			height: auto;
+			padding: 0;
+			.common-box {
+				padding: 10px;
+			}
+			.common-img {
+				margin: 0 auto;
+			}
+			.w3c {
+				background: #00A3CF;
+				width: 80px;
+				.img {
+					background: url(/static/img/friend/w3c.png);
+					width: 28px;
+					height: 26px;
+				}
+			}
+			.fex {
+				background: #C94700;
+				.img {
+					background: url(/static/img/friend/fex.png);
+					width: 52px;
+					height: 26px;
+				}
+			}
+			.ued {
+				background: #C94700;
+				.img {
+					background: url(/static/img/friend/ued.png);
+					width: 26px;
+					height: 26px;
+				}
+			}
+			.isux {
+				background: #333;
+				.img {
+					background: url(/static/img/friend/isux.png);
+					width: 92px;
+					height: 26px;
+				}
+			}
+			.text {
+				text-align: center;
+				background: #28966F;
+				color: #F0FFFB;
+				padding: 5px 10px;
+				font-size: 15px;
+				line-height: 25px;
+			}
+		}
 	}
 }

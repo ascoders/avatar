@@ -63,6 +63,7 @@ ul, ol {
 }
 li {
     letter-spacing: 1px;
+    padding: 5px 0;
 }
 h1, h2, h3, h4, h5, h6, small {
     font-size: 100%;
@@ -423,6 +424,9 @@ td {
     width: 100%;
     z-index: 999;
     border-bottom: 1px solid #228260;
+    .li {
+        padding: 0;
+    }
     .f-ct {
         width: 90%;
     }
@@ -437,7 +441,7 @@ td {
     ul li {
         list-style: none;
         float: left;
-        margin: 0;
+        padding: 0;
     }
     ul li a {
         display: block;

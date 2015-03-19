@@ -123,8 +123,8 @@ func (this *ArticleController) Edit() {
 			return false, _data
 		}
 
-		if len([]rune(this.GetString("content"))) < 3 || len([]rune(this.GetString("content"))) > 50000 {
-			return false, "内容长度3-50000"
+		if len([]rune(this.GetString("content"))) < 3 || len([]rune(this.GetString("content"))) > 20000 {
+			return false, "内容长度3-20000"
 		}
 
 		// 查询文章

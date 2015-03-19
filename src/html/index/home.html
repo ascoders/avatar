@@ -16,7 +16,7 @@
           <span class='tag tag-category'>{[{el._c}]}</span>
           <span class='tag tag-good' ms-if='el.good'>精华</span>
           <!-- 标签 -->
-          <span ms-repeat-elem='el.ta' class='tag f-ml5' ms-class='active:elem == searchTag'><i class='fa fa-tag f-mr5'></i>{[{elem}]}</span>
+          <span ms-repeat-elem='el.ta' class='tag-tag f-ml5' ms-class='active:elem == searchTag'><i class='fa fa-tag f-mr5'></i>{[{elem}]}</span>
           <!-- 标题 -->
           {[{el.t}]}
           <div class='f-fr'>
@@ -47,11 +47,12 @@
               <input class='f-ml10' type='radio' id='input-0' value='0' ms-duplex-int='inputCategory'><label for='input-0'>问答</label>
               <input class='f-ml10' type='radio' id='input-1' value='1' ms-duplex-int='inputCategory'><label for='input-1'>分享</label>
             </div>
-            <textarea id='editor' ms-duplex='inputContent' maxlength='10000'></textarea>
+            <textarea id='editor' ms-duplex='inputContent' maxlength='20000'></textarea>
             <button class='btn btn-default f-mt10' ms-click='submit'>提交</button>
           </div>
         </div>
 
+        <!-- 基本介绍 -->
         <div class="g-bd f-p20 f-mt20">
           <p>
             avalon中文社区<a href='https://github.com/ascoders/avatar'>代码开源地址</a>
@@ -60,6 +61,40 @@
             访问<a href='http://www.cnblogs.com/rubylouvre/'>司徒正美博客</a>获取avalon最新信息
           </p>
         </div>
+
+        <!-- 前端网址 -->
+        <div class="g-bd f-p20 f-mt20 friend">
+
+          <a class='box' href='http://fex.baidu.com/' target='_blank'>
+            <div class='common-box fex'>
+              <div class='common-img img'></div>
+            </div>
+            <div class='text'>百度 FEX</div>
+          </a>
+
+          <a class='box' href='http://ued.taobao.org/' target='_blank'>
+            <div class='common-box ued'>
+              <div class='common-img img'></div>
+            </div>
+            <div class='text'>淘宝 UED</div>
+          </a>
+
+          <a class='box' href='http://isux.tencent.com/' target='_blank'>
+            <div class='common-box isux'>
+              <div class='common-img img'></div>
+            </div>
+            <div class='text'>腾讯 ISUX</div>
+          </a>
+
+          <a class='box' href='http://www.w3cplus.com/' target='_blank'>
+            <div class='common-box w3c'>
+              <div class='common-img img'></div>
+            </div>
+            <div class='text'>w3c</div>
+          </a>
+
+        </div>
+
       </div>
     </div>
 
@@ -81,7 +116,6 @@
       <div class='g-bd f-p10 f-mt10 f-tac'>
         <a href='http://www.cnblogs.com/rubylouvre/p/3181291.html' target='_blank' class='link-bar'>入门教程</a>
         <a href='http://ued.qunar.com/oniui/index.html#pages/apis/index.html' target='_blank' class='link-bar'>去哪儿avalon</a>
-        
       </div>
 
     </div>
@@ -92,7 +126,7 @@
         <div class='bar-title'>热门标签</div>
         <a class='bar-content' ms-class='active:el.n == searchTag' ms-repeat='hotTags' ms-href='#!/?tag={[{el.n}]}'><i class='fa fa-tag f-mr5'></i>{[{el.n}]}</a>
       </div>
-      
     </div>
+
   </div>
 </div>

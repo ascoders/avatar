@@ -44,9 +44,9 @@ var paths = {
 ///////////////////////////////////////////////////////////////////////////////////////////////
 gulp.task('html', function () {
 	return gulp.src(paths.src.html)
-		//.pipe(htmlmin({
-		//	collapseWhitespace: true
-		//}))
+		.pipe(htmlmin({
+			collapseWhitespace: true
+		}))
 		.pipe(gulp.dest(paths.dist.html));
 });
 
@@ -66,7 +66,13 @@ gulp.task('css', function () {
 ///////////////////////////////////////////////////////////////////////////////////////////////
 gulp.task('js', function () {
 	return gulp.src(paths.src.js)
-		//.pipe(uglify())
+		.pipe(gulp.dest(paths.dist.js));
+});
+
+// js压缩
+gulp.task('jsDest', function () {
+	return gulp.src(paths.src.js)
+		.pipe(uglify())
 		.pipe(gulp.dest(paths.dist.js));
 });
 
@@ -96,4 +102,9 @@ gulp.task('watch', function () {
 ///////////////////////////////////////////////////////////////////////////////////////////////
 gulp.task('default', ['clean'], function () {
 	gulp.start('html', 'css', 'js', 'watch');
+});
+
+// 部署模式
+gulp.task('dest', ['clean'], function () {
+	gulp.start('html', 'css', 'jsDest');
 });

@@ -552,7 +552,7 @@ var global = avalon.define({
 	}, // 缓存
 	github: function () { //github登陆按钮
 		post('/api/check/setState', null, null, '', function (data) {
-			window.location.href = 'https://github.com/login/oauth/authorize?client_id=c6d10825049147370ff2&redirect_uri=http://115.29.52.129/oauth&state=' + data;
+			window.location.href = 'https://github.com/login/oauth/authorize?client_id=c6d10825049147370ff2&redirect_uri=http://www.avalon.org.cn/oauth&state=' + data;
 		});
 	},
 	emptyObject: function (obj) { //判断对象是否为空
