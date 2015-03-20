@@ -31,22 +31,24 @@ func init() {
 		),
 		//文章模块
 		beego.NSNamespace("/article",
-			//新增
+			// 新增
 			beego.NSRouter("/add", &controllers.ArticleController{}, "post:Add"),
-			//编辑
+			// 编辑
 			beego.NSRouter("/edit", &controllers.ArticleController{}, "post:Edit"),
 			// 删除
 			beego.NSRouter("/delete", &controllers.ArticleController{}, "post:Delete"),
 			// 置顶
 			beego.NSRouter("/top", &controllers.ArticleController{}, "post:Top"),
-			//获得文章列表
+			// 获得文章列表
 			beego.NSRouter("/list", &controllers.ArticleController{}, "post:List"),
-			//查询某个文章信息
+			// 查询某个文章信息
 			beego.NSRouter("/article", &controllers.ArticleController{}, "post:Article"),
-			//发布评论
+			// 发布评论
 			beego.NSRouter("/addReply", &controllers.ArticleController{}, "post:AddReply"),
-			//查询评论
+			// 查询评论
 			beego.NSRouter("/reply", &controllers.ArticleController{}, "post:Reply"),
+			// 改变分类
+			beego.NSRouter("/changeCategory", &controllers.ArticleController{}, "post:ChangeCategory"),
 		),
 		//用户模块
 		beego.NSNamespace("/user",

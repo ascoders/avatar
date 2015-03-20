@@ -74,7 +74,6 @@ func (this *ArticleController) Add() {
 
 		article := &models.Article{}
 		article.Uid = bson.ObjectIdHex(this.GetSession("ID").(string))
-		article.Uimage = member.Image
 		article.Category = category
 		article.Title = this.GetString("title")
 		article.Content = this.GetString("content")
@@ -265,12 +264,17 @@ func (this *ArticleController) List() {
 		}
 
 		article := &models.Article{}
-		result := article.Find(category, from, number)
+		lists := article.Find(category, from, number)
 		count := article.Count(category)
 
+		// 查询每个文章作者信息
+		member := &models.Member{}
+		members := member.FindArticles(lists)
+
 		return true, map[string]interface{}{
-			"lists": result,
-			"count": count,
+			"lists":   lists,
+			"members": members,
+			"count":   count,
 		}
 	}()
 
@@ -329,8 +333,6 @@ func (this *ArticleController) AddReply() {
 		reply := &models.Reply{}
 		reply.Article = article.Id
 		reply.Uid = member.Id
-		reply.Uimage = member.Image
-		reply.Uname = member.NickName
 		reply.Content = this.GetString("content")
 		reply.GetId()
 
@@ -378,7 +380,57 @@ func (this *ArticleController) Reply() {
 		reply := &models.Reply{}
 		result := reply.Find(this.GetString("article"), from, number)
 
-		return true, result
+		// 查询评论用户信息
+		member := &models.Member{}
+		members := member.FindReplys(result)
+
+		return true, map[string]interface{}{
+			"reply":  result,
+			"member": members,
+		}
+	}()
+
+	this.Data["json"] = map[string]interface{}{
+		"ok":   ok,
+		"data": data,
+	}
+	this.ServeJson()
+}
+
+// 修改分类
+func (this *ArticleController) ChangeCategory() {
+	ok, data := func() (bool, interface{}) {
+		if this.GetSession("ID") == nil {
+			return false, "未登录"
+		}
+
+		//查询用户
+		member := &models.Member{}
+		if _ok, _data := member.FindOne(this.GetSession("ID").(string)); !_ok {
+			return false, _data
+		}
+
+		//查询文章
+		article := &models.Article{}
+		if _ok, _data := article.FindOne(this.GetString("article")); !_ok {
+			return false, _data
+		}
+
+		if member.Id != article.Uid && !member.Admin {
+			return false, "没有权限"
+		}
+
+		category, _ := this.GetInt("category")
+
+		if category < 0 || category > 2 {
+			return false, "分类不在范围"
+		}
+
+		if _ok := article.UpdateCategory(category); !_ok {
+			return false, "更新失败"
+		}
+
+		return true, nil
 	}()
 
 	this.Data["json"] = map[string]interface{}{

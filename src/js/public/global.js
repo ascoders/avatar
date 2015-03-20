@@ -9,9 +9,9 @@ avalon.config({
 	interpolate: ["{[{", "}]}"],
 });
 
-//过滤markdown标签
+// 过滤markdown标签
 avalon.filters.cleanmark = function (str) { //str为管道符之前计算得到的结果，默认框架会帮你传入，此方法必须返回一个值
-	//移除所有 * ` [ ] # - >
+	// 移除所有 * ` [ ] # - >
 	str = str
 		.replace(/[!.*](.*)/g, "【图片】")
 		.replace(/\*/g, "")
@@ -24,6 +24,23 @@ avalon.filters.cleanmark = function (str) { //str为管道符之前计算得到�
 
 	return str;
 };
+
+// 计算用户等级 
+avalon.filters.setLevel = function (str) { // 发布*2 评论*1
+	var result = '草民';
+	var levels = ['皇帝', '总督', '巡抚', '侍郎', '村长', '草民'];
+	var numbers = [1000, 400, 200, 40, 6, 0];
+
+	for (var i = 0, j = numbers.length; i < j; i++) {
+		if (str >= numbers[i]) {
+			result = levels[i];
+			break;
+		}
+	}
+
+	return result;
+};
+
 
 require.config({
 	paths: {

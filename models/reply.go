@@ -9,8 +9,6 @@ type Reply struct {
 	Id      bson.ObjectId `bson:"_id" json:"_id" form:"_id"` // 主键
 	Article bson.ObjectId `bson:"a" json:"a" form:"a"`       // 所属文章id
 	Uid     bson.ObjectId `bson:"u" json:"u" form:"u"`       // 所有者id
-	Uimage  string        `bson:"ui" json:"ui" form:"ui"`    // 【冗余】所有者头像
-	Uname   string        `bson:"un" json:"un" form:"un"`    // 【冗余】所有者昵称
 	Content string        `bson:"co" json:"co" form:"co"`    // 内容
 	Time    time.Time     `bson:"tm" json:"tm" form:"tm"`    // 发布日期
 }

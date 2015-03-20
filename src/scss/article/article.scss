@@ -3,7 +3,7 @@
 		font-size: 20px;
 		font-weight: bold;
 		text-align: center;
-		height: 35px;
+		height: 40px;
 	}
 	.info {
 		font-size: 14px;
@@ -32,6 +32,11 @@
 			background: #EEF8ED;
 		}
 	}
+	// 操作选择框
+	.operate-select {
+		padding: 0 10px;
+		height: 33px;
+	}
 	//正文内容
 	.content {
 		min-height: 100px;
@@ -43,19 +48,32 @@
 			font-size: 14px;
 			font-weight: normal;
 			text-align: left;
-			padding: 10px 10px 10px 40px;
+			padding: 10px 10px 10px 50px;
 			position: relative;
 			.img {
 				position: absolute;
 				width: 25px;
 				height: 25px;
 				border-radius: 3px;
-				left: 10px;
-				top: 5px;
+				left: 20px;
+				top: 7px;
 			}
 		}
 		.detail {
-			padding: 10px 0;
+			padding: 10px 20px 35px 20px;
+			position: relative;
+			.rightBottom {
+				position: absolute;
+				right: 20px;
+				bottom: 10px;
+				.timeago {
+					font-size: 14px;
+					color: #666;
+				}
+			}
 		}
+	}
+	img {
+		max-width: 100%;
 	}
 }

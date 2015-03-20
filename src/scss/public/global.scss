@@ -333,6 +333,7 @@ td {
     float: left;
     list-style: none;
     margin: 0;
+    padding: 0;
 }
 .g-pa li+li {
     margin-left: -1px;
@@ -442,6 +443,10 @@ td {
         list-style: none;
         float: left;
         padding: 0;
+        span {
+            line-height: 40px;
+            font-size: 14px;
+        }
     }
     ul li a {
         display: block;

@@ -136,6 +136,13 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 
 			//获得文章列表
 			post(postUrl, postParams, null, '获取信息失败：', function (data) {
+				// 解析回复作者信息
+				var articleMembers = {};
+				data.members = data.members || [];
+				for (var i = 0, j = data.members.length; i < j; i++) {
+					articleMembers[data.members[i]._id] = data.members[i];
+				}
+
 				for (var key in data.lists) {
 					//是否为精华
 					if (data.lists[key].r * 5 + data.lists[key].v > 100) { //判定为精华
@@ -153,6 +160,15 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 						data.lists[key]._c = '分享';
 						break;
 					}
+
+					// 设置作者信息
+					data.lists[key].ua = articleMembers[data.lists[key].u].a;
+					data.lists[key].ur = articleMembers[data.lists[key].u].r;
+					data.lists[key].un = articleMembers[data.lists[key].u].n;
+					data.lists[key].ui = articleMembers[data.lists[key].u].i;
+
+					// 设置最后回复者信息
+					data.lists[key].li = data.lists[key].l == "" ? "" : articleMembers[data.lists[key].l].i; // last image
 				}
 
 				avalon.vmodels.index.lists = data.lists || [];

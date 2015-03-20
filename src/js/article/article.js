@@ -240,12 +240,29 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 					from: state.query.from,
 					number: state.query.number,
 				}, null, '取评论失败', function (_data) {
-					//markdown解析
-					for (var key in _data) {
-						_data[key].co = marked(_data[key].co);
+					// 解析回复作者信息
+					var replyMembers = {};
+					_data.member = _data.member || [];
+					for (var i = 0, j = _data.member.length; i < j; i++) {
+						replyMembers[_data.member[i]._id] = _data.member[i];
 					}
 
-					avalon.vmodels.article.replys = _data;
+					for (var key in _data.reply) {
+						// markdown解析
+						_data.reply[key].co = marked(_data.reply[key].co);
+
+						// 设置作者信息
+						_data.reply[key].ua = replyMembers[_data.reply[key].u].a;
+						_data.reply[key].ur = replyMembers[_data.reply[key].u].r;
+						_data.reply[key].un = replyMembers[_data.reply[key].u].n;
+						_data.reply[key].ui = replyMembers[_data.reply[key].u].i;
+					}
+
+					avalon.vmodels.article.replys = _data.reply;
+
+
+
+					avalon.vmodels.article.replyMembers = replyMembers;
 				});
 
 				//获取作者信息
@@ -310,6 +327,15 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 					avalon.vmodels.article.addTag();
 				}
 			});
+		},
+		replysRendered: function () { // 评论渲染完毕
+			$('.timeago').timeago();
+		},
+		changeCategory: function (value) { // 改变分类
+			post('/api/article/changeCategory', {
+				article: avalon.vmodels.article.article._id,
+				category: value,
+			}, '修改成功', '');
 		},
 		$skipArray: ['onChange', 'onAfterLoad', 'temp'],
 	});

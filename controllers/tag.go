@@ -31,7 +31,7 @@ func (this *TagController) Bind() {
 			return false, "文章不存在"
 		}
 
-		if member.Id != article.Uid {
+		if member.Id != article.Uid && !member.Admin {
 			return false, "没有权限"
 		}
 
@@ -88,7 +88,7 @@ func (this *TagController) UnBind() {
 			return false, "文章不存在"
 		}
 
-		if member.Id != article.Uid {
+		if member.Id != article.Uid && !member.Admin {
 			return false, "没有权限"
 		}
 
@@ -143,14 +143,19 @@ func (this *TagController) GetList() {
 
 		//查找标签
 		article := &models.Article{}
-		articles := article.FindByTag(this.GetString("tag"), from, number)
+		lists := article.FindByTag(this.GetString("tag"), from, number)
 
 		//查询该分类文章总数
 		count := article.FindTagCount(this.GetString("tag"))
 
+		// 查询每个文章作者信息
+		member := &models.Member{}
+		members := member.FindArticles(lists)
+
 		return true, map[string]interface{}{
-			"lists": articles,
-			"count": count,
+			"lists":   lists,
+			"count":   count,
+			"members": members,
 		}
 	}()
 

@@ -42,7 +42,7 @@ func (this *Member) Insert() (bool, interface{}) {
 	return true, nil
 }
 
-//根据code查找用户
+// 根据code查找用户
 func (this *Member) FindToken(token string) (bool, interface{}) {
 	//查询用户
 	err := Db.C("member").Find(bson.M{"to": token}).One(&this)
@@ -60,6 +60,71 @@ func (this *Member) AddArticleNumber() {
 /* 增加评论量 */
 func (this *Member) AddReplyNumber() {
 	Db.C("member").Update(bson.M{"_id": this.Id}, bson.M{"$inc": bson.M{"r": 1}})
+}
+
+// 查询评论用户信息
+func (this *Member) FindReplys(replys []*Reply) []*Member {
+	var results []*Member
+
+	members := make(map[bson.ObjectId]bool)
+
+	for k, _ := range replys {
+		if ok := members[replys[k].Uid]; !ok {
+			members[replys[k].Uid] = true
+
+			// 查询此用户信息
+			member := &Member{}
+
+			AutoCache("member-"+replys[k].Uid.Hex(), &member, 60, func() {
+				Db.C("member").Find(bson.M{"_id": replys[k].Uid}).One(&member)
+			})
+
+			results = append(results, member)
+		}
+	}
+
+	return results
+}
+
+// 查询文章用户信息
+func (this *Member) FindArticles(articles []*Article) []*Member {
+	var results []*Member
+
+	members := make(map[bson.ObjectId]bool)
+
+	for k, _ := range articles {
+		if ok := members[articles[k].Uid]; !ok {
+			members[articles[k].Uid] = true
+
+			// 查询此用户信息
+			member := &Member{}
+
+			AutoCache("member-"+articles[k].Uid.Hex(), &member, 60, func() {
+				Db.C("member").Find(bson.M{"_id": articles[k].Uid}).One(&member)
+			})
+
+			results = append(results, member)
+		}
+
+		if !bson.IsObjectIdHex(articles[k].Lid) {
+			continue
+		}
+
+		if ok := members[bson.ObjectIdHex(articles[k].Lid)]; !ok {
+			members[articles[k].Uid] = true
+
+			// 查询此用户信息
+			member := &Member{}
+
+			AutoCache("member-"+articles[k].Lid, &member, 60, func() {
+				Db.C("member").Find(bson.M{"_id": bson.ObjectIdHex(articles[k].Lid)}).One(&member)
+			})
+
+			results = append(results, member)
+		}
+	}
+
+	return results
 }
 
 /* 保存 */
