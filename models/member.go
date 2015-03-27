@@ -8,7 +8,7 @@ import (
 type Member struct {
 	Id            bson.ObjectId `bson:"_id" json:"_id"`         // 主键
 	NickName      string        `bson:"n" json:"n" form:"n"`    // 昵称
-	Login         string        `bson:"l" json:"l" form:"l"`    //登陆名（不重复）
+	Login         string        `bson:"l" json:"l" form:"l"`    // 登陆名
 	Image         string        `bson:"i" json:"i" form:"i"`    // 用户头像
 	Token         string        `bson:"to" json:"to" form:"to"` // github对应token
 	ArticleNumber int           `bson:"a" json:"a" form:"a"`    // 文章发表量

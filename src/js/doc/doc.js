@@ -21,12 +21,12 @@ define("doc", ['jquery', 'jquery.tree'], function ($) {
 			//所有表树状结构渲染
 			$("#doc #tree").hide().treeview().show();
 		},
-		onChange: function (state) {
+		onEnter: function (state) {
 
 		},
 		onAfterLoad: function () {
 
 		},
-		$skipArray: ['onChange', 'onAfterLoad'],
+		$skipArray: ['onEnter', 'onAfterLoad'],
 	});
 });

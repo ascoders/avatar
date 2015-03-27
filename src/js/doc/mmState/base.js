@@ -3,12 +3,12 @@
 define("doc.mmState.base", ['jquery'], function ($) {
 	return avalon.define({
 		$id: "doc.mmState.base",
-		onChange: function () {
+		onEnter: function () {
 			console.log(avalon.vmodels['doc.mmState.base']);
 		},
 		onAfterLoad: function () {
 
 		},
-		$skipArray: ['onChange', 'onAfterLoad'],
+		$skipArray: ['onEnter', 'onAfterLoad'],
 	});
 });

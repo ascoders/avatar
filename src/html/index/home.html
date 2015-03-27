@@ -2,12 +2,13 @@
   <div class='f-ct f-cb f-mt20'>
   	<div class="g-mn2">
       <div class="g-mn2c">
-        <div class='bar' ms-if='searchTag == ""' ms-each='categorys'>
-          <input type='radio' ms-attr-value='$val' ms-duplex-string='category' ms-attr-id='$val'><label class='f-mr10' ms-attr-for='$val'>{[{$key}]}</label>
-        </div>
-
-        <div class='bar' ms-if='searchTag != ""'>
-        标签：<i class='fa fa-tag f-mr5'></i>{[{searchTag}]}
+        <div class='bar'>
+          <div ms-repeat='categorys' class='category' ms-class='active:$val == category && searchTag == ""' ms-click='changeCategory($val)'>
+            {[{$key | html}]}
+          </div>
+          <div class='category active' ms-if='searchTag != ""'>
+            <i class='fa fa-tag f-mr5'></i>{[{searchTag}]}
+          </div>
         </div>
 
         <a class='box' ms-repeat='lists' data-repeat-rendered='rendered' ms-href='#!/art/{[{el._id}]}'>
@@ -36,7 +37,7 @@
           <div class="g-bd1 f-cb">
             <div class='f-wm f-mb20' id='j-title' style='line-height:33px;'>
               <span class='input-addon f-fl'>发帖</span>
-              <input class='input f-fl f-mr10' ms-duplex='inputTitle' placeholder='标题可不填' maxlength='25'>
+              <input class='input f-fl f-mr10' ms-duplex='inputTitle' placeholder='标题可不填' maxlength='60'>
 
               <button ms-repeat='tagArray' ms-click='RemoveTag(el)' class='btn btn-danger f-br3 f-fl f-mr5'><i class='fa fa-tag f-mr5'></i>{[{el}]}<i class='fa fa-close f-ml5'></i></button>
               <input class='btn-height f-fl' id='tag-input' ms-duplex='addTagInput' ms-visible='tag' maxlength='15'>
@@ -124,6 +125,7 @@
 
       <div class='g-bd f-p10 f-mt10'>
         <a href='#!/?tag=avalon基础教程' class='link-bar'><i class="fa fa-tag f-mr5"></i>avalon基础教程</a>
+        <a href='#!/?tag=front-end' class='link-bar'><i class="fa fa-tag f-mr5"></i>front-end</a>
       </div>
 
     </div>

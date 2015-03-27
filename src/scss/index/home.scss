@@ -11,8 +11,24 @@
 	.bar {
 		background: #28966F;
 		color: #F0FFFB;
-		padding: 10px;
 		font-size: 14px;
+		height: 40px;
+		.category {
+			padding: 0 10px;
+			line-height: 40px;
+			float: left;
+			&:hover, &.active {
+				background: white;
+				color: #28966F;
+			}
+			&:hover {
+				cursor: pointer;
+				cursor: hand;
+			}
+			&.active {
+				cursor: default;
+			}
+		}
 	}
 	.bar-title {
 		padding: 5px 10px;

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	"gopkg.in/mgo.v2/bson"
@@ -16,8 +17,9 @@ type Article struct {
 	Views    uint32        `bson:"v" json:"v" form:"v"`       // 浏览量
 	Reply    uint32        `bson:"r" json:"r" form:"r"`       // 回复量
 	Tag      []string      `bson:"ta" json:"ta" form:"ta"`    // 标签
+	Top      int           `bson:"tp" json:"tp" form:"tp"`    // 置顶优先级
 	Time     time.Time     `bson:"tm" json:"tm" form:"tm"`    // 发布日期
-	Top      int           `bson:"tp" json:"tp" form:"tp"`    // 置顶
+	TimeLast time.Time     `bson:"tl" json:"tl" form:"tl"`    // 最后挖坟日期
 }
 
 /* 获取id */
@@ -28,6 +30,7 @@ func (this *Article) GetId() {
 /* 插入文章 */
 func (this *Article) Insert() (bool, interface{}) {
 	this.Time = time.Now()
+	this.TimeLast = this.Time
 
 	err := Db.C("article").Insert(this)
 	if err != nil {
@@ -47,13 +50,13 @@ func (this *Article) Find(category int, from int, number int) []*Article {
 	var result []*Article
 	//如果category为-1，则查询全部总数
 	if category == -1 {
-		Db.C("article").Find(bson.M{"tp": 0}).Select(bson.M{"co": 0}).Sort("-tm").Skip(from).Limit(number).All(&result)
+		Db.C("article").Find(bson.M{"tp": 0}).Select(bson.M{"co": 0}).Sort("-tl").Skip(from).Limit(number).All(&result)
 	} else {
-		Db.C("article").Find(bson.M{"c": category, "tp": 0}).Select(bson.M{"co": 0}).Sort("-tm").Skip(from).Limit(number).All(&result)
+		Db.C("article").Find(bson.M{"c": category}).Select(bson.M{"co": 0}).Sort("-tl").Skip(from).Limit(number).All(&result)
 	}
 
 	// 如果form为0，查询置顶文章
-	if from == 0 {
+	if from == 0 && category == -1 {
 		var top []*Article
 		Db.C("article").Find(bson.M{"tp": bson.M{"$gt": 0}}).Select(bson.M{"co": 0}).Sort("-tp").All(&top)
 
@@ -94,9 +97,13 @@ func (this *Article) AddViews() {
 	Db.C("article").Update(bson.M{"_id": this.Id}, bson.M{"$inc": bson.M{"v": 1}})
 }
 
-// 为某个文章增加评论
+// 为某个文章增加评论 会同时更新挖坟日期
 func (this *Article) AddReply() {
-	Db.C("article").Update(bson.M{"_id": this.Id}, bson.M{"$inc": bson.M{"r": 1}})
+	err := Db.C("article").Update(bson.M{"_id": this.Id}, bson.M{
+		"$inc": bson.M{"r": 1},
+		"$set": bson.M{"tl": time.Now()},
+	})
+	fmt.Println(err)
 }
 
 // 更新某文章最后评论人信息
@@ -125,9 +132,12 @@ func (this *Article) FindUserCold(id bson.ObjectId) []*Article {
 	return result
 }
 
-// 更新内容
+// 更新内容 会同时更新挖坟日期
 func (this *Article) UpdateContent() {
-	Db.C("article").Update(bson.M{"_id": this.Id}, bson.M{"$set": bson.M{"co": this.Content}})
+	Db.C("article").Update(bson.M{"_id": this.Id}, bson.M{"$set": bson.M{
+		"co": this.Content,
+		"tl": time.Now(),
+	}})
 }
 
 // 设置置顶数

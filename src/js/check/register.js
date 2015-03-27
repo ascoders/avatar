@@ -14,7 +14,7 @@ define("checkRegister", ['jquery'], function ($) {
 		jumpStep: function (step) {
 			avalon.vmodels.checkRegister.step = step;
 		},
-		onChange: function () {
+		onEnter: function () {
 			avalon.vmodels.checkRegister.freshCap();
 		},
 		freshCap: function () { //刷新验证码
@@ -69,6 +69,6 @@ define("checkRegister", ['jquery'], function ($) {
 				avalon.vmodels.checkRegister.cap = '';
 			});
 		},
-		$skipArray: ['onChange', 'onAfterLoad'],
+		$skipArray: ['onEnter', 'onAfterLoad'],
 	});
 });

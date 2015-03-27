@@ -41,7 +41,6 @@ avalon.filters.setLevel = function (str) { // 发布*2 评论*1
 	return result;
 };
 
-
 require.config({
 	paths: {
 		"jquery": "http://cdn.bootcss.com/jquery/1.11.2/jquery.min",
@@ -136,60 +135,6 @@ function confirm(content, callback) {
 		});
 
 		myModal.open();
-	});
-}
-
-//调整用户头像图片路径
-function userImage(str) {
-	if (str != undefined && str != "") {
-		if (!isNaN(str)) {
-			return "/static/img/user/" + str + ".jpg";
-		}
-		return str;
-	}
-	return;
-}
-
-//自带_xsrf的post提交，整合了error处理
-function post(url, params, success, error, callback, errorback) {
-	require(['jquery', 'jquery.cookie'], function ($) {
-		//获取xsrftoken
-		var xsrf = $.cookie("_xsrf");
-		if (!xsrf) {
-			return;
-		}
-		var xsrflist = xsrf.split("|");
-		var xsrftoken = Base64.decode(xsrflist[0]);
-
-		var postParam = {
-			_xsrf: xsrftoken
-		};
-		postParam = $.extend(postParam, params);
-
-		return $.ajax({
-				url: url,
-				type: 'POST',
-				traditional: true, //为了传数组
-				data: postParam,
-			})
-			.done(function (data) {
-				if (data.ok) { //操作成功
-					if (success !== null) {
-						notice(success, 'green');
-					}
-					//执行回调函数
-					if (callback != null) {
-						callback(data.data);
-					}
-				} else { //操作失败
-					if (error !== null) {
-						notice(error + data.data, 'red');
-					}
-					if (errorback != null) {
-						errorback(data.data);
-					}
-				}
-			});
 	});
 }
 
@@ -295,6 +240,60 @@ function createPagin(from, number, count, params) {
 	}
 
 	return "<ul class='g-pa f-pr'>" + list + "</ul>";
+}
+
+//调整用户头像图片路径
+function userImage(str) {
+	if (str != undefined && str != "") {
+		if (!isNaN(str)) {
+			return "/static/img/user/" + str + ".jpg";
+		}
+		return str;
+	}
+	return;
+}
+
+//自带_xsrf的post提交，整合了error处理
+function post(url, params, success, error, callback, errorback) {
+	require(['jquery', 'jquery.cookie'], function ($) {
+		//获取xsrftoken
+		var xsrf = $.cookie("_xsrf");
+		if (!xsrf) {
+			return;
+		}
+		var xsrflist = xsrf.split("|");
+		var xsrftoken = Base64.decode(xsrflist[0]);
+
+		var postParam = {
+			_xsrf: xsrftoken
+		};
+		postParam = $.extend(postParam, params);
+
+		return $.ajax({
+				url: url,
+				type: 'POST',
+				traditional: true, //为了传数组
+				data: postParam,
+			})
+			.done(function (data) {
+				if (data.ok) { //操作成功
+					if (success !== null) {
+						notice(success, 'green');
+					}
+					//执行回调函数
+					if (callback != null) {
+						callback(data.data);
+					}
+				} else { //操作失败
+					if (error !== null) {
+						notice(error + data.data, 'red');
+					}
+					if (errorback != null) {
+						errorback(data.data);
+					}
+				}
+			});
+	});
 }
 
 //字符串截取方法，支持中文
@@ -552,6 +551,9 @@ require(['jquery'], function ($) {
 	});
 });
 
+// jbox提示
+jbox();
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // global - 全局vm
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -572,13 +574,36 @@ var global = avalon.define({
 			window.location.href = 'https://github.com/login/oauth/authorize?client_id=c6d10825049147370ff2&redirect_uri=http://www.avalon.org.cn/oauth&state=' + data;
 		});
 	},
+	otherLogin: function (name) { // 出github以外，其他第三方登陆
+		require(['frontia'], function (frontia) {
+			// API key 从应用信息页面获取
+			var AK = '6NfcaqlPimQxS9buDbFGG6iP';
+
+			// 在应用管理页面下的 社会化服务 - 基础设置中设置该地址
+			var redirect_url = 'http://www.avalon.org.cn/oauth';
+
+			// 初始化 frontia
+			frontia.init(AK);
+
+			// 初始化登录的配置
+			var options = {
+				response_type: 'token',
+				media_type: name,
+				redirect_uri: redirect_url,
+				client_type: 'web'
+			};
+
+			// 登录
+			frontia.social.login(options);
+		});
+	},
 	emptyObject: function (obj) { //判断对象是否为空
 		require(['jquery'], function ($) {
 			return $.isEmptyObject(obj);
 		});
 	},
 	getMessage: function () { //获取用户消息
-		console.log('get message');
+
 	},
 	signout: function () { //退出登陆
 		post('/api/check/signout', null, '已退出', null, function (data) {
@@ -618,21 +643,19 @@ require(['jquery', 'mmState'], function ($) {
 		global.avalon = data.data;
 	});
 
-
 	//找不到的页面跳转到404
 	avalon.router.error(function () {
+		console.log(arguments);
 		avalon.router.navigate('/404');
 	});
 
 	//模版无法加载跳转404
 	avalon.state.config({
 		onload: function () {
-			//记录当前状态
-			global.temp.state = this;
 
-			//改变页面title
 		},
-		onloadError: function () {
+		onError: function (err) {
+			console.log(err);
 			avalon.router.navigate("/404");
 		}
 	})
@@ -655,23 +678,11 @@ require(['jquery', 'mmState'], function ($) {
 		views: {
 			"container": {
 				templateUrl: '/static/html/index/home.html',
+				controllerUrl: ["../index/index"],
+				ignoreChange: function (changeType) {
+					if (changeType) return true;
+				},
 			}
-		},
-		onChange: function () {
-			var _this = this;
-			var done = this.async();
-
-			require(['../index/index.js'], function (self) {
-				self.onChange(_this);
-				done();
-			});
-		},
-		onAfterLoad: function () {
-			require(['../index/index.js'], function (index) {
-				index.onAfterLoad();
-				//再扫描一遍，防止脚本在dom之后加载
-				avalon.scan();
-			});
 		},
 	});
 
@@ -682,45 +693,26 @@ require(['jquery', 'mmState'], function ($) {
 		views: {
 			"container": {
 				templateUrl: '/static/html/article/article.html',
+				controllerUrl: ["../article/article"],
+				ignoreChange: function (changeType) {
+					if (changeType) return true;
+				},
 			}
-		},
-		onChange: function () {
-			var _this = this;
-			var done = this.async();
-
-			require(['../article/article'], function (self) {
-				self.onChange(_this);
-				done();
-			});
-		},
-		onAfterLoad: function () {
-			require(['../article/article'], function (self) {
-				self.onAfterLoad();
-			});
 		},
 	});
 
-	// github回调页面
+	// 回调页面
 	avalon.state("oauth", {
 		controller: "global",
 		url: "/oauth",
 		views: {
 			"container": {
 				templateUrl: '/static/html/check/oauth.html',
+				controllerUrl: ["../check/oauth"],
+				ignoreChange: function (changeType) {
+					if (changeType) return true;
+				},
 			}
-		},
-		onChange: function () {
-			var _this = this,
-				done = this.async();
-			require(['../check/oauth'], function (oauth) {
-				oauth.onChange(_this, done);
-				done();
-			});
-		},
-		onAfterLoad: function () {
-			require(['../check/oauth'], function (oauth) {
-				oauth.onAfterLoad();
-			});
 		},
 	});
 
@@ -728,61 +720,8 @@ require(['jquery', 'mmState'], function ($) {
 	avalon.state("oauth", {
 		controller: "global",
 		url: "/oauth/jump",
-		onChange: function () {
+		onEnter: function () {
 			location.href = "https://openapi.baidu.com/social/oauth/2.0/receiver" + location.search;
-		},
-	});
-
-	// 文档
-	avalon.state("doc", {
-		controller: "global",
-		url: "/doc",
-		views: {
-			"container": {
-				templateUrl: '/static/html/doc/doc.html',
-			}
-		},
-		abstract: true,
-		onChange: function () {
-			var _this = this;
-			var done = this.async();
-
-			require(['../doc/doc'], function (userBase) {
-				userBase.onChange(_this);
-				done();
-			});
-		},
-		onAfterLoad: function () {
-			require(['../doc/doc'], function (userBase) {
-				userBase.onAfterLoad();
-			});
-		},
-	});
-
-	// 账号后台 - 分类 - 页面
-	avalon.state("doc.page", {
-		controller: "doc",
-		url: "/{category}/{page}",
-		views: {
-			"docContainer": {
-				templateUrl: function (params) {
-					return '/static/html/doc/' + params.category + '/' + params.page + '.html';
-				},
-			}
-		},
-		onChange: function () {
-			var _this = this;
-			var done = this.async();
-
-			require(['../doc/' + this.params.category + '/' + this.params.page], function (self) {
-				self.onChange(_this);
-				done();
-			});
-		},
-		onAfterLoad: function (state) {
-			require(['../doc/' + state.params.category + '/' + state.params.page], function (self) {
-				self.onAfterLoad();
-			});
 		},
 	});
 
@@ -790,7 +729,6 @@ require(['jquery', 'mmState'], function ($) {
 	avalon.history.start({
 		basepath: "/",
 		html5Mode: true,
-		hashPrefix: '!',
 	});
 
 	// 扫描

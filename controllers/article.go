@@ -29,8 +29,8 @@ func (this *ArticleController) Add() {
 			return false, "分类错误"
 		}
 
-		if len([]rune(this.GetString("title"))) > 25 {
-			return false, "标题最长25"
+		if len([]rune(this.GetString("title"))) > 60 {
+			return false, "标题最长60"
 		}
 
 		if len([]rune(this.GetString("content"))) < 3 || len([]rune(this.GetString("content"))) > 20000 {

@@ -3,7 +3,7 @@
 define("auth", ['jquery'], function ($) {
 	return avalon.define({
 		$id: "auth",
-		onChange: function (state) {
+		onEnter: function (state) {
 			post('/api/check/auth', {
 				id: state.query.id,
 				expire: state.query.expire,
@@ -33,6 +33,6 @@ define("auth", ['jquery'], function ($) {
 				break;
 			}
 		},
-		$skipArray: ['onChange', 'onAfterLoad', 'todo'],
+		$skipArray: ['onEnter', 'onAfterLoad', 'todo'],
 	});
 });

@@ -6,7 +6,7 @@ define("checkLogin", ['jquery', 'frontia'], function ($, frontia) {
 		$id: "checkLogin",
 		account: '',
 		password: '',
-		onChange: function () {
+		onEnter: function () {
 
 		},
 		onAfterLoad: function () {
@@ -77,6 +77,6 @@ define("checkLogin", ['jquery', 'frontia'], function ($, frontia) {
 				avalon.router.navigate(avalon.router.getLastPath());
 			})
 		},
-		$skipArray: ['onChange', 'onAfterLoad'],
+		$skipArray: ['onEnter', 'onAfterLoad'],
 	});
 });

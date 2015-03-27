@@ -4,12 +4,12 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name='format-detection' content='telephone=no'>
+<meta name='keywords' content='avalon avalonjs avalon社区 avalon中文社区 avalonjs社区 avalonjs中文社区'>
+<meta name='description' content=''>
 <link href="http://cdn.bootcss.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
 <link href="/static/css/all.css" rel='stylesheet'>
 <link href='/static/img/avalon.ico' rel='shortcut icon'>
 <title>Avalon中文社区</title>
-<meta name='keywords' content=''>
-<meta name='description' content=''>
 
 <body ms-controller='global'>
   <!-- 导航条 -->
@@ -23,13 +23,15 @@
           <li>
             <a href='https://github.com/RubyLouvre/avalon'><i class='fa fa-star f-mr5'></i>star {[{avalon.stargazers_count}]}</a>
           </li>
+          <!--
+          <li>
+            <a href='#!/doc/mmRouter/base'><i class='fa fa-users f-mr5'></i>会员</a>
+          </li>
+          -->
         </ul>
         <ul class='f-fr'>
           <li ms-if='my.ad'>
             <span><i class="fa fa-globe f-mr5"></i>超级管理员</span>
-          </li>
-          <li>
-            <a href='#!/doc/mmRouter/base'><i class='fa fa-book f-mr5'></i>文档</a>
           </li>
           <li class='j-drop' ms-if='myLogin'>
             <a href="#">
@@ -40,7 +42,10 @@
             <ul class="j-drop-content f-pa f-z3 f-r0 f-dn">
               <li>
                 <a href="#!//">
-                  <i class='fa fa-cog f-mr5'></i>我的账号
+                  <i class='fa fa-user f-mr5'></i>我的账号
+                </a>
+                <a href="#!//">
+                  <i class='fa fa-cog f-mr5'></i>设置
                 </a>
               </li>
               <li>
@@ -51,7 +56,29 @@
             </ul>
           </li>
           <li id='j-login' ms-if='!myLogin'>
-            <a href='javascript:void(0)' ms-click='github'>github登录</a>
+            <a class='jbox' title='通过Github登陆' href='javascript:void(0)' ms-click='github'>
+              <i class="fa fa-github f-fs20"></i>
+            </a>
+          </li>
+          <li ms-if='!myLogin'>
+            <a class='jbox' title='通过QQ登陆' href='javascript:void(0)' ms-click='otherLogin("qqdenglu")'>
+              <i class="fa fa-qq f-fs16"></i>
+            </a>
+          </li>
+          <li ms-if='!myLogin'>
+            <a class='jbox' title='通过微博登陆' href='javascript:void(0)' ms-click='otherLogin("sinaweibo")'>
+              <i class="fa fa-weibo f-fs20"></i>
+            </a>
+          </li>
+          <li ms-if='!myLogin'>
+            <a class='jbox' title='通过腾讯微博登陆' href='javascript:void(0)' ms-click='otherLogin("qqweibo")'>
+              <i class="fa fa-tencent-weibo f-fs20"></i>
+            </a>
+          </li>
+          <li ms-if='!myLogin'>
+            <a class='jbox' title='通过百度登陆' href='javascript:void(0)' ms-click='otherLogin("baidu")'>
+              百度
+            </a>
           </li>
         </ul>
       </div>

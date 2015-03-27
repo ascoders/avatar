@@ -144,3 +144,89 @@ func (this *CheckController) SignOut() {
 	}
 	this.ServeJson()
 }
+
+// 社交化平台查询是否有账号，若有自动登陆
+func (this *CheckController) HasOauth() {
+	ok, data := func() (bool, interface{}) {
+		party := &models.Party{}
+		// 查询账号是否存在
+		ok := party.FindMember(this.GetString("id"), this.GetString("type"))
+		if !ok { // 用户不存在，显示创建用户信息
+			return true, -1
+		}
+
+		// 用户已存在
+		if !BaiduSocialCheck(this.GetString("token"), this.GetString("id")) { //通过不验证
+			return false, "验证失败"
+		}
+
+		// 刷新验证权限
+		party.RefreshAuthor(this.GetString("id"), this.GetString("type"), this.GetString("token"), this.GetString("expire"))
+
+		// 实例化用户
+		member := &models.Member{}
+
+		if _ok, _ := member.FindOne(party.MemberId.Hex()); !_ok { // 查询用户
+			return false, "用户不存在"
+		}
+
+		//生成session
+		this.SetSession("ID", member.Id.Hex())
+
+		// 返回用户信息
+		return true, member
+	}()
+
+	this.Data["json"] = map[string]interface{}{
+		"ok":   ok,
+		"data": data,
+	}
+
+	this.ServeJson()
+}
+
+/* 第三方平台注册用户 */
+func (this *CheckController) OauthRegister() {
+	ok, data := func() (bool, interface{}) {
+		member := &models.Member{}
+		party := &models.Party{}
+
+		if this.GetString("nickname") == "" {
+			return false, "昵称不能为空"
+		}
+
+		//查找是否有重复第三方id
+		if ok := party.IdExist(this.GetString("id")); ok { //已存在
+			return false, "该平台已经注册了账号"
+		}
+
+		//检测token是否合法
+		if ok := BaiduSocialCheck(this.GetString("token"), this.GetString("id")); !ok {
+			return false, "参数非法"
+		}
+
+		//插入用户
+		member.NickName = this.GetString("nickname")
+		member.Image = this.GetString("image")
+
+		if _ok, _ := member.Insert(); !_ok {
+			return false, "新增用户失败"
+		}
+
+		//插入第三方关联
+		party.Insert(this.GetString("id"), this.GetString("type"), member.Id.Hex(), this.GetString("token"), this.GetString("nickname"), this.GetString("image"), this.GetString("expire"))
+
+		//生成session
+		this.SetSession("ID", member.Id.Hex())
+
+		//查询用户信息
+		return true, member
+	}()
+
+	this.Data["json"] = map[string]interface{}{
+		"ok":   ok,
+		"data": data,
+	}
+
+	this.ServeJson()
+}

@@ -106,6 +106,7 @@ define(["avalon"], function (avalon) {
             if (this.monitorMode === "iframepoll") {
                 //IE6,7在hash改变时不会产生历史，需要用一个iframe来共享历史
                 avalon.ready(function () {
+                    if (that.iframe) return
                     var iframe = that.iframe || document.getElementById(that.iframeID) || document.createElement('iframe')
                     iframe.src = 'javascript:0'
                     iframe.style.display = 'none'
@@ -144,7 +145,9 @@ define(["avalon"], function (avalon) {
                 }
                 if (hash !== void 0) {
                     that.fragment = hash
-                    that.fireRouteChange(hash)
+                    that.fireRouteChange(hash, {
+                        fromHistory: true
+                    })
                 }
             }
 
@@ -189,12 +192,13 @@ define(["avalon"], function (avalon) {
             clearInterval(this.checkUrl)
             History.started = false
         },
-        updateLocation: function (hash, options) {
+        updateLocation: function (hash, options, urlHash) {
             var options = options || {},
                 rp = options.replace,
                 st = options.silent
             if (this.monitorMode === "popstate") {
-                var path = this.rootpath + hash
+                // html5 mode 第一次加载的时候保留之前的hash
+                var path = this.rootpath + hash + (urlHash || "")
                 if (path != this.location.pathname) history[rp ? "replaceState" : "pushState"]({
                     path: path
                 }, document.title, path)

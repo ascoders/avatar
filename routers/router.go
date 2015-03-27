@@ -28,6 +28,10 @@ func init() {
 			beego.NSRouter("/currentUser", &controllers.CheckController{}, "post:CurrentUser"),
 			//注销
 			beego.NSRouter("/signout", &controllers.CheckController{}, "post:SignOut"),
+			//社交化平台查询是否有账号，若有自动登陆
+			beego.NSRouter("/hasOauth", &controllers.CheckController{}, "post:HasOauth"),
+			//第三方平台注册用户
+			beego.NSRouter("/oauthRegister", &controllers.CheckController{}, "post:OauthRegister"),
 		),
 		//文章模块
 		beego.NSNamespace("/article",
@@ -56,6 +60,10 @@ func init() {
 			beego.NSRouter("/user", &controllers.UserController{}, "post:User"),
 			//获取用户热评和被忽视的文章
 			beego.NSRouter("/getHotCold", &controllers.UserController{}, "post:GetHotCold"),
+			//获取第三方平台绑定状况列表
+			beego.NSRouter("/oauthList", &controllers.UserController{}, "post:OauthList"),
+			//第三方平台绑定 新增/更新
+			beego.NSRouter("/oauth", &controllers.UserController{}, "post:Oauth"),
 		),
 		//七牛图片处理模块
 		beego.NSNamespace("/qiniu",

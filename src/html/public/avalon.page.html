@@ -1,0 +1,24 @@
+<div ms-controller='page' ms-if='show' class="g-bd f-mt20 f-cb">
+	<ul class="g-pa f-pr">
+		<li>
+			<!-- 前一页 -->
+			<a class="f-bln" ms-class='disabled:page == 1 || loading' ms-click='jump(page-1, false)' href="javascript:void(0)">
+				<i class="fa fa-arrow-left"></i>
+			</a>
+		</li>
+		<li ms-repeat='lists'>
+			<a ms-if='el != -1' ms-class="active:el == page && !loading" ms-class-1='disabled:loading' ms-click='jump(el, false)' href="javascript:void(0)">
+				<span ms-if='!loading || el != pageTo'>{[{el}]}</span>
+				<span ms-if='loading && el == pageTo'><i class="fa fa-refresh fa-spin f-mr5"></i>{[{el}]}</span>
+			</a>
+
+			<a ms-if='el == -1' class='disabled' href="javascript:void(0)">...</a>
+		</li>
+		<!-- 后一页 -->
+		<li>
+			<a class="f-brn" ms-class='disabled:page == allPage || loading' ms-click='jump(page+1, false)' href="javascript:void(0)">
+				<i class="fa fa-arrow-right"></i>
+			</a>
+		</li>
+	</ul>
+</div>

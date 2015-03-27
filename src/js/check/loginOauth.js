@@ -6,7 +6,7 @@ define("checkOauth", ['jquery', 'frontia'], function ($, frontia) {
 		$id: "checkOauth",
 		img: '',
 		nickname: '',
-		onChange: function () {
+		onEnter: function () {
 			// API key 从应用信息页面获取
 			var AK = 'RqeMWD9G1m8agmxfj6ngCKRG';
 
@@ -77,6 +77,6 @@ define("checkOauth", ['jquery', 'frontia'], function ($, frontia) {
 				avalon.router.navigate(avalon.router.getLastPath());
 			});
 		},
-		$skipArray: ['onChange', 'onAfterLoad'],
+		$skipArray: ['onEnter', 'onAfterLoad'],
 	});
 });

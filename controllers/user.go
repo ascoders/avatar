@@ -88,3 +88,62 @@ func (this *UserController) GetGithub() {
 	}
 	this.ServeJson()
 }
+
+/* 获取第三方平台绑定状况列表 */
+func (this *UserController) OauthList() {
+	/*
+		//查询该用户绑定的平台
+		party := &models.Party{}
+		partys := party.FindBinds(this.member.Id)
+
+		this.Data["json"] = map[string]interface{}{
+			"ok":   true,
+			"data": partys,
+		}
+		this.ServeJson()
+	*/
+}
+
+/* 第三方平台绑定 */
+func (this *UserController) Oauth() {
+	/*
+		ok, data := func() (bool, interface{}) {
+			//检测token是否合法
+			if ok := BaiduSocialCheck(this.GetString("token"), this.GetString("id")); !ok {
+				return false, "token不合法"
+			}
+
+			var plantform string
+			switch this.GetString("type") {
+			case "baidu":
+				plantform = "百度账号"
+			case "qqdenglu":
+				plantform = "qq账号"
+			case "sinaweibo":
+				plantform = "新浪微博账号"
+			case "renren":
+				plantform = "人人网账号"
+			case "qqweibo":
+				plantform = "腾讯微博"
+			case "kaixin":
+				plantform = "开心网"
+			}
+
+			party := &models.Party{}
+			//查询是否存在
+			if ok := party.IdExist(this.GetString("id")); ok { //已存在，是更新授权操作
+				party.RefreshAuthor(this.GetString("id"), this.GetString("type"), this.GetString("token"), this.GetString("expire"))
+			} else { //不存在，新增第三方关联
+				party.Insert(this.GetString("id"), this.GetString("type"), this.member.Id.Hex(), this.GetString("token"), this.GetString("nickname"), this.GetString("image"), this.GetString("expire"))
+			}
+
+			return true, nil
+		}()
+
+		this.Data["json"] = map[string]interface{}{
+			"ok":   ok,
+			"data": data,
+		}
+		this.ServeJson()
+	*/
+}

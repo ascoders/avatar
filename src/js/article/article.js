@@ -1,7 +1,7 @@
 'use strict';
 
 define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', 'jquery.cookie', 'jquery.autocomplete'], function ($, marked, prettify) {
-	return avalon.define({
+	var vm = avalon.define({
 		$id: "article",
 		article: {}, //文章信息
 		replys: [], //评论信息
@@ -14,13 +14,14 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 		addTagInput: '', //新增标签输入框内容
 		tag: false, //是否在编辑标签状态
 		rTag: false, //是否在删除标签状态
+		$tuhua: false, // 是否加载了图话
 		temp: {
 			editor: null,
 			from: 0,
 			number: 0,
 			freshSame: function () { // 获取类似类容
 				post('/api/tag/same', {
-					article: avalon.vmodels.article.article._id,
+					article: vm.article._id,
 				}, null, '', function (data) {
 					for (var key in data) {
 						//如果没有标题，取内容
@@ -32,7 +33,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 						data[key].Content = data[key].co.replace(/&nbsp;/g, '');
 					}
 
-					avalon.vmodels.article.same = data || [];
+					vm.same = data || [];
 				});
 			},
 		},
@@ -44,40 +45,40 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 				return;
 			}
 
-			if (!avalon.vmodels.article.edit) {
-				if (avalon.vmodels.article.inputContent.length < 3 || avalon.vmodels.article.inputContent.length > 10000) {
+			if (!vm.edit) {
+				if (vm.inputContent.length < 3 || vm.inputContent.length > 10000) {
 					notice('评论内容长度3-10000', 'red');
 					return;
 				}
 			} else {
-				if (avalon.vmodels.article.inputContent.length < 3 || avalon.vmodels.article.inputContent.length > 50000) {
+				if (vm.inputContent.length < 3 || vm.inputContent.length > 50000) {
 					notice('文章内容长度3-50000', 'red');
 					return;
 				}
 			}
 
-			if (!avalon.vmodels.article.edit) {
+			if (!vm.edit) {
 				post('/api/article/addReply', {
-					article: avalon.vmodels.article.article._id,
-					content: avalon.vmodels.article.inputContent,
+					article: vm.article._id,
+					content: vm.inputContent,
 				}, '评论成功', '', function () {
 					//清空输入内容
-					avalon.vmodels.article.inputContent = '';
+					vm.inputContent = '';
 
 					//跳转到最后一页
-					avalon.router.navigate('/art/' + avalon.vmodels.article.article._id +
-						'?number=' + avalon.vmodels.article.temp.number + '&from=' +
-						Math.floor(parseInt(avalon.vmodels.article.article.r) / avalon.vmodels.article.temp.number) * avalon.vmodels.article.temp.number, {
+					avalon.router.navigate('/art/' + vm.article._id +
+						'?number=' + vm.temp.number + '&from=' +
+						Math.floor(parseInt(vm.article.r) / vm.temp.number) * vm.temp.number, {
 							reload: true
 						});
 				});
 			} else {
 				post('/api/article/edit', {
-					id: avalon.vmodels.article.article._id,
-					content: avalon.vmodels.article.inputContent,
+					id: vm.article._id,
+					content: vm.inputContent,
 				}, '更新成功', '', function () {
 					//清空输入内容
-					avalon.vmodels.article.inputContent = '';
+					vm.inputContent = '';
 
 					//刷新本页
 					avalon.router.navigate(window.location.pathname + window.location.search, {
@@ -93,19 +94,19 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 		},
 		addTop: function () { // 置顶/取消
 
-			if (avalon.vmodels.article.article.tp == 0) {
+			if (vm.article.tp == 0) {
 				post('/api/article/top', {
-					id: avalon.vmodels.article.article._id,
+					id: vm.article._id,
 					top: true,
 				}, '已置顶', '', function (data) {
-					avalon.vmodels.article.article.tp = 1;
+					vm.article.tp = 1;
 				});
 			} else {
 				post('/api/article/top', {
-					id: avalon.vmodels.article.article._id,
+					id: vm.article._id,
 					top: false,
 				}, '已取消置顶', '', function (data) {
-					avalon.vmodels.article.article.tp = 0;
+					vm.article.tp = 0;
 				});
 			}
 
@@ -113,7 +114,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 		deleteArticle: function () { // 删除
 			confirm('删除此文章吗', function () {
 				post('/api/article/delete', {
-					id: avalon.vmodels.article.article._id,
+					id: vm.article._id,
 				}, '成功删除', '', function (data) {
 					// 移动到首页
 					avalon.router.navigate('/');
@@ -121,12 +122,12 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 			});
 		},
 		changeEdit: function () { // 切换到编辑状态
-			avalon.vmodels.article.edit = true;
+			vm.edit = true;
 
-			avalon.vmodels.article.inputContent = avalon.vmodels.article.article.co;
+			vm.inputContent = vm.article.co;
 
 			//同步review
-			avalon.vmodels.article.temp.editor.freshPreview();
+			vm.temp.editor.freshPreview();
 
 			//滑到编辑区
 			$("html, body").animate({
@@ -134,95 +135,110 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 			}, 300);
 		},
 		removeEdit: function () { // 取消编辑状态
-			avalon.vmodels.article.edit = false;
+			vm.edit = false;
 
-			avalon.vmodels.article.inputContent = '';
+			vm.inputContent = '';
 		},
 		toggleTag: function () { // 新增标签输入框组是否显示
-			avalon.vmodels.article.tag = !avalon.vmodels.article.tag;
+			vm.tag = !vm.tag;
 
 			// 获取焦点
 			$('#article #tag-input').focus();
 		},
 		addTag: function () { // 新增标签
-			if (avalon.vmodels.article.addTagInput == '') {
+			if (vm.addTagInput == '') {
 				notice('标签不能为空', 'red');
 				return;
 			}
 
-			if (avalon.vmodels.article.addTagInput.length > 15) {
+			if (vm.addTagInput.length > 15) {
 				notice('标签最大长度为15', 'red');
 				return;
 			}
 
-			if (avalon.vmodels.article.article.ta.size() >= 5) {
+			if (vm.article.ta.size() >= 5) {
 				notice('最多5个标签', 'red');
 				return;
 			}
 
 			//是否重复
-			if ($.inArray(avalon.vmodels.article.addTagInput, avalon.vmodels.article.article.ta.$model) != -1) {
+			if ($.inArray(vm.addTagInput, vm.article.ta.$model) != -1) {
 				notice('标签不能重复', 'red');
 				return;
 			}
 
 			post('/api/tag/bind', {
-				article: avalon.vmodels.article.article._id,
-				name: avalon.vmodels.article.addTagInput,
+				article: vm.article._id,
+				name: vm.addTagInput,
 			}, '标签已添加', '', function (data) {
-				avalon.vmodels.article.article.ta.push(avalon.vmodels.article.addTagInput);
+				vm.article.ta.push(vm.addTagInput);
 
 				// 输入框置空
-				avalon.vmodels.article.addTagInput = '';
+				vm.addTagInput = '';
 
 				// 取消新增状态
-				avalon.vmodels.article.tag = false;
+				vm.tag = false;
 
 				// 获取类似文章
-				avalon.vmodels.article.temp.freshSame();
+				vm.temp.freshSame();
 			});
 		},
 		jumpOrRemove: function (name) {
-			if (avalon.vmodels.article.rTag) {
+			if (vm.rTag) {
 				post('/api/tag/unBind', {
-					article: avalon.vmodels.article.article._id,
+					article: vm.article._id,
 					name: name,
 				}, '标签已删除', '', function (data) {
-					avalon.vmodels.article.article.ta.remove(name);
+					vm.article.ta.remove(name);
 
 					// 获取类似文章
-					avalon.vmodels.article.temp.freshSame();
+					vm.temp.freshSame();
 				});
 			} else {
 				avalon.router.navigate('/?tag=' + name);
 			}
 		},
 		toggleRemoveTag: function () { //切换删除标签状态
-			avalon.vmodels.article.rTag = !avalon.vmodels.article.rTag;
+			vm.rTag = !vm.rTag;
 		},
-		onChange: function (state) {
+		replysRendered: function () { // 评论渲染完毕
+			$('.timeago').timeago();
+		},
+		changeCategory: function (value) { // 改变分类
+			post('/api/article/changeCategory', {
+				article: vm.article._id,
+				category: value,
+			}, '修改成功', '');
+		},
+		$skipArray: ['temp'],
+	});
+
+	return avalon.controller(function ($ctrl) {
+		// $ctrl.$vmodels = [vm];
+
+		$ctrl.$onEnter = function (param, rs, rj) {
 			// 初始化状态
-			avalon.vmodels.article.edit = false;
-			avalon.vmodels.article.inputContent = '';
+			vm.edit = false;
+			vm.inputContent = '';
 
 			//获取文章信息
 			post('/api/article/article', {
-				id: state.params.id,
+				id: param.id,
 			}, null, '文章不存在', function (data) {
 				//文章内容markdown解析
 				data.coHtml = marked(data.co);
-				avalon.vmodels.article.article = data;
+				vm.article = data;
 
-				state.query.from = state.query.from || 0;
-				state.query.number = state.query.number || 20;
-				avalon.vmodels.article.temp.from = state.query.from;
-				avalon.vmodels.article.temp.number = state.query.number;
+				mmState.query.from = mmState.query.from || 0;
+				mmState.query.number = mmState.query.number || 20;
+				vm.temp.from = mmState.query.from;
+				vm.temp.number = mmState.query.number;
 
 				//生成分页
-				avalon.vmodels.article.pagin = createPagin(state.query.from, state.query.number, data.r);
+				vm.pagin = createPagin(mmState.query.from, mmState.query.number, data.r);
 
 				var setUserInfo = function (info) {
-					avalon.vmodels.article.author = info;
+					vm.author = info;
 
 					avalon.nextTick(function () {
 						$('.timeago').timeago();
@@ -234,11 +250,11 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 				}
 
 				//获取评论信息
-				avalon.vmodels.article.replys.clear();
+				vm.replys.clear();
 				post('/api/article/reply', {
-					article: avalon.vmodels.article.article._id,
-					from: state.query.from,
-					number: state.query.number,
+					article: vm.article._id,
+					from: mmState.query.from,
+					number: mmState.query.number,
 				}, null, '取评论失败', function (_data) {
 					// 解析回复作者信息
 					var replyMembers = {};
@@ -258,11 +274,11 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 						_data.reply[key].ui = replyMembers[_data.reply[key].u].i;
 					}
 
-					avalon.vmodels.article.replys = _data.reply;
+					vm.replys = _data.reply;
 
 
 
-					avalon.vmodels.article.replyMembers = replyMembers;
+					vm.replyMembers = replyMembers;
 				});
 
 				//获取作者信息
@@ -280,31 +296,32 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 
 				//获取作者热门和冷门文章
 				if (avalon.vmodels.global.temp.userHotCold[data.u]) { //优先使用缓存
-					avalon.vmodels.article.hot = avalon.vmodels.global.temp.userHotCold[data.u].hot || [];
-					avalon.vmodels.article.cold = avalon.vmodels.global.temp.userHotCold[data.u].cold || [];
+					vm.hot = avalon.vmodels.global.temp.userHotCold[data.u].hot || [];
+					vm.cold = avalon.vmodels.global.temp.userHotCold[data.u].cold || [];
 				} else {
 					post('/api/user/getHotCold', {
 						id: data.u,
 					}, null, '获取作者文章失败', function (_data) {
 						//保存进缓存
 						avalon.vmodels.global.temp.userHotCold[data.u] = _data;
-						avalon.vmodels.article.hot = _data.hot || [];
-						avalon.vmodels.article.cold = _data.cold || [];
+						vm.hot = _data.hot || [];
+						vm.cold = _data.cold || [];
 					});
 				}
 
 				// 获取类似文章
-				avalon.vmodels.article.temp.freshSame();
+				vm.temp.freshSame();
 
 			}, function () { //页面不存在
 				avalon.router.navigate('/404');
 			});
-		},
-		onAfterLoad: function () {
-			//实例化markdown编辑器
-			avalon.vmodels.article.temp.editor = new $("#article #editor").MarkEditor();
+		}
 
-			avalon.vmodels.article.temp.editor.createDom();
+		$ctrl.$onRendered = function () {
+			//实例化markdown编辑器
+			vm.temp.editor = new $("#article #editor").MarkEditor();
+
+			vm.temp.editor.createDom();
 
 			//获取xsrftoken
 			var xsrf = $.cookie("_xsrf");
@@ -323,20 +340,25 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 					_xsrf: xsrftoken,
 				},
 				onSelect: function (suggestion) {
-					avalon.vmodels.article.addTagInput = suggestion.value;
-					avalon.vmodels.article.addTag();
+					vm.addTagInput = suggestion.value;
+					vm.addTag();
 				}
 			});
-		},
-		replysRendered: function () { // 评论渲染完毕
-			$('.timeago').timeago();
-		},
-		changeCategory: function (value) { // 改变分类
-			post('/api/article/changeCategory', {
-				article: avalon.vmodels.article.article._id,
-				category: value,
-			}, '修改成功', '');
-		},
-		$skipArray: ['onChange', 'onAfterLoad', 'temp'],
-	});
+
+			// 百度图话
+			(function () {
+				if (!vm.$tuhua) {
+					vm.$tuhua = true;
+
+					window.baiduImageTalk = {
+						'renderUrl': 'http://bcscdn.baidu.com/public03/imageplus/tuhua/v3/toggle.app.js'
+					};
+					var s = document.createElement('script');
+					s.type = 'text/javascript';
+					s.src = 'http://bcscdn.baidu.com/public03/imageplus/tuhua/common_loader.js?cache=' + Math.ceil(new Date() / 3600000);
+					document.getElementsByTagName('head')[0].appendChild(s);
+				}
+			})();
+		}
+	})
 });

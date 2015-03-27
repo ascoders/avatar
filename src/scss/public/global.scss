@@ -22,7 +22,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 $font-color: #333;
-$link-color: #369;
+$link-color: #008753;
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 重置样式
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,8 +77,8 @@ pre, code, kbd, samp {
 code {
     padding: 2px 4px;
     font-size: 90%;
-    color: #C7254E;
-    background-color: #F9F2F4;
+    color: #45675A;
+    background-color: #E5FBF3;
     border-radius: 4px;
 }
 pre code {
@@ -189,11 +189,14 @@ table thead {
 table thead tr th {
     padding: 10px;
     font-weight: bold;
-    background: #F9F9F9;
+    background: #AADBC9;
 }
 table tbody tr td {
     padding: 10px;
     position: relative;
+}
+tbody>tr>td, tbody>tr>th, tfoot>tr>td, tfoot>tr>th, thead>tr>td, thead>tr>th {
+    border: 1px solid #88C4AE;
 }
 select {
     cursor: pointer;
@@ -208,13 +211,7 @@ input:focus, html.dark input:focus {
     padding-left: 8px;
 }
 ::selection {
-    background: #ccc;
-}
-.table-bordered>thead>tr>td {
-    background: whitesmoke;
-}
-html.dark .table-bordered>thead>tr>td {
-    background: #222;
+    background: #BDE9D9;
 }
 td {
     outline: none;
@@ -347,7 +344,7 @@ td {
     height: 34px;
 }
 .g-pa li a:not(.disabled):not(.active):hover {
-    background: whitesmoke;
+    background: #EEF8ED;
     text-decoration: none;
 }
 .g-pa li .disabled {
@@ -358,7 +355,7 @@ td {
     text-decoration: none;
 }
 .g-pa li a.active {
-    background: #428BCA;
+    background: #19B77E;
     color: white;
 }
 .g-pas {
@@ -1032,7 +1029,7 @@ td {
     cursor: hand;
 }
 .f-hvc:hover {
-    color: #369;
+    color: #008753;
 }
 .f-hvc-danger:hover {
     color: #D9534F;
@@ -1538,16 +1535,16 @@ pre.prettyprint {
     font-size: 14px;
     line-height: 24px;
     padding: 0 0 0 15px;
-    border: 1px solid #ddd;
+    border: 1px solid #AADBC9;
     border-radius: 0px;
-    background: whitesmoke;
-    color: #999;
+    background: #F0FEF9;
+    color: #579E83;
 }
 ol.linenums {
     margin-top: 0;
     margin-bottom: 0;
     & li {
-        border-left: 1px solid #ddd;
+        border-left: 1px solid #AADBC9;
         min-height: 24px;
     }
 }
