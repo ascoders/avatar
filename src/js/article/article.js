@@ -272,6 +272,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 						_data.reply[key].ur = replyMembers[_data.reply[key].u].r;
 						_data.reply[key].un = replyMembers[_data.reply[key].u].n;
 						_data.reply[key].ui = replyMembers[_data.reply[key].u].i;
+						_data.reply[key]._id = replyMembers[_data.reply[key].u]._id;
 					}
 
 					vm.replys = _data.reply;

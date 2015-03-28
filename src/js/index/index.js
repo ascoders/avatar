@@ -19,11 +19,20 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 		searchTag: '', //当前搜索的标签（仅在category:tag路由下有效）
 		hotTags: [], //热门标签（仅在category:tag路由下有效）
 		tagArray: [], //准备发布文章的标签数组
+		number: 20, // 每页显示数量
 		temp: {
 			editor: {},
 			from: 0,
-			number: 0,
 			watchCategory: false, //是否执行category的watch
+		},
+		changeNumber: function (val) { // 改变每页显示数量
+			//跳转
+			avalon.router.go('index', {
+				query: {
+					number: val,
+					category: vm.category,
+				},
+			});
 		},
 		toggleTag: function () { // 新增标签输入框组是否显示
 			vm.tag = !vm.tag;
@@ -108,6 +117,7 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 				query: {
 					category: val,
 					from: 0,
+					number: vm.number,
 				},
 			});
 		},
@@ -120,6 +130,7 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 		$ctrl.$onEnter = function (param, rs, rj) {
 			mmState.query.from = mmState.query.from || 0;
 			mmState.query.number = mmState.query.number || 20;
+			vm.number = mmState.query.number;
 			mmState.query.category = mmState.query.category || -1;
 
 			vm.temp.watchCategory = false;

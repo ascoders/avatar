@@ -34,17 +34,14 @@
             <span><i class="fa fa-globe f-mr5"></i>超级管理员</span>
           </li>
           <li class='j-drop' ms-if='myLogin'>
-            <a href="#">
+            <a ms-href="#!/user/{[{my._id}]}">
               <img class='user-image' ms-src='my.i'>	
               <span class='user-name'>{[{my.n}]}</span> 	
               <i class="fa fa-caret-down"></i>
             </a>
             <ul class="j-drop-content f-pa f-z3 f-r0 f-dn">
               <li>
-                <a href="#!//">
-                  <i class='fa fa-user f-mr5'></i>我的账号
-                </a>
-                <a href="#!//">
+                <a href="#!/setting">
                   <i class='fa fa-cog f-mr5'></i>设置
                 </a>
               </li>

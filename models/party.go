@@ -8,13 +8,13 @@ import (
 )
 
 type Party struct {
-	Id          string        `bson:"_id"` //第三方平台id
-	Type        string        `bson:"t"`   //第三方平台类型
-	MemberId    bson.ObjectId `bson:"mi"`  //用户id
-	AccessToken string        `bson:"at"`  //用户token
-	Name        string        `bson:"n"`   //用户昵称
-	Image       string        `bson:"i"`   //用户头像地址
-	ExpiresTime time.Time     `bson:"e"`   //授权过期时间
+	Id          string        `bson:"_id" json:"_id" form:"_id"` //第三方平台id
+	Type        string        `bson:"t" json:"t" form:"t"`       //第三方平台类型
+	MemberId    bson.ObjectId `bson:"mi" json:"mi" form:"mi"`    //用户id
+	AccessToken string        `bson:"at" json:"at" form:"at"`    //用户token
+	Name        string        `bson:"n" json:"n" form:"n"`       //用户昵称
+	Image       string        `bson:"i" json:"i" form:"i"`       //用户头像地址
+	ExpiresTime time.Time     `bson:"e" json:"e" form:"e"`       //授权过期时间
 }
 
 var (
@@ -47,6 +47,11 @@ func (this *Party) Insert(id string, _type string, memberid string, accesstoken 
 	this.ExpiresTime = time.Now().Add(expresDuration)
 	//插入
 	partyC.Insert(this)
+}
+
+// 修改第三方平台对应用户id
+func (this *Party) ChangeMember(id string, memberId bson.ObjectId) {
+	Db.C("party").Update(bson.M{"_id": id}, bson.M{"$set": bson.M{"mi": memberId}})
 }
 
 /* 根据平台id和类型查询用户id */

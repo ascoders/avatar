@@ -28,10 +28,18 @@ define("oauth", ['jquery'], function ($) {
 							token: access_token,
 							login: _data.login,
 						}, null, '', function (__data) {
-							avalon.vmodels.global.my = __data;
-							avalon.vmodels.global.myLogin = true;
-							//返回首页
-							avalon.router.navigate('/');
+							if (__data == 'exist') {
+								notice('绑定失败：此第三方账号已有绑定', 'red');
+								avalon.router.navigate('/setting/thrid');
+							} else if (__data == 'bind') {
+								notice('绑定成功', 'green');
+								avalon.router.navigate('/setting/thrid');
+							} else {
+								avalon.vmodels.global.my = __data;
+								avalon.vmodels.global.myLogin = true;
+								//返回首页
+								avalon.router.navigate('/');
+							}
 						});
 					});
 				});
@@ -45,14 +53,13 @@ define("oauth", ['jquery'], function ($) {
 
 					frontia.social.setLoginCallback({ //登录成功后的回调
 						success: function (user) {
-							console.log(user);
 							post('/api/check/hasOauth', {
 								id: user.getId(),
 								token: user.getAccessToken(),
 								type: user.getMediaType(),
 								expire: user.getExpiresIn()
 							}, null, null, function (data) {
-								if (data == -1) { // 用户不存在
+								if (data == -1) { // 此第三方账号对应本站用户不存在
 									//获取用户详细信息
 									$.ajax({
 										url: 'https://openapi.baidu.com/social/api/2.0/user/info',
@@ -70,11 +77,20 @@ define("oauth", ['jquery'], function ($) {
 											image: result.headurl,
 											type: user.getMediaType(),
 											expire: user.getExpiresIn(),
-										}, '注册成功', '', function (_data) {
-											avalon.vmodels.global.my = _data;
-											avalon.vmodels.global.myLogin = true;
-											//返回首页
-											avalon.router.navigate('/');
+										}, null, '', function (_data) {
+											if (_data == "thrid") { // 第三方绑定成功
+												notice('绑定成功', 'green');
+												avalon.router.navigate('/setting/thrid');
+											} else if (_data == "thridExist") {
+												notice('绑定失败：此第三方账号已有绑定', 'red');
+												avalon.router.navigate('/setting/thrid');
+											} else {
+												notice('注册成功', 'green');
+												avalon.vmodels.global.my = _data;
+												avalon.vmodels.global.myLogin = true;
+												//返回首页
+												avalon.router.navigate('/');
+											}
 										});
 									});
 								} else { //账号已存在，自动登陆

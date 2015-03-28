@@ -1,0 +1,12 @@
+<div id='settingThrid' ms-controller='settingThrid'>
+	<div class='box'>
+		<i class='fa fa-github-square f-mr10 f-fs30' ms-if='el.image != ""'></i>
+		<button class='btn btn-default' ms-if='my.l == ""' ms-click='github'><i class='fa fa-link f-mr5'></i>绑定 github</button>
+		<button class='btn btn-default disabled' ms-if='my.l != ""'><i class='fa fa-link f-mr5'></i>已绑定 github</button>
+	</div>
+	<div class='box' ms-repeat='thrids'>
+		<i class='fa f-mr10 f-fs30' ms-if='el.image != ""' ms-class='{[{el.image}]}'></i>
+		<button class='btn btn-default' ms-if='!el.linked' ms-click='otherLogin(el.linkName)'><i class='fa fa-link f-mr5'></i>绑定 {[{el.name}]}</button>
+		<button class='btn btn-default disabled' ms-if='el.linked'><i class='fa fa-link f-mr5'></i>已绑定 {[{el.name}]}</button>
+	</div>
+</div>

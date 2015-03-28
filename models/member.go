@@ -8,7 +8,7 @@ import (
 type Member struct {
 	Id            bson.ObjectId `bson:"_id" json:"_id"`         // 主键
 	NickName      string        `bson:"n" json:"n" form:"n"`    // 昵称
-	Login         string        `bson:"l" json:"l" form:"l"`    // 登陆名
+	Login         string        `bson:"l" json:"l" form:"l"`    // github登陆名
 	Image         string        `bson:"i" json:"i" form:"i"`    // 用户头像
 	Token         string        `bson:"to" json:"to" form:"to"` // github对应token
 	ArticleNumber int           `bson:"a" json:"a" form:"a"`    // 文章发表量
@@ -127,11 +127,13 @@ func (this *Member) FindArticles(articles []*Article) []*Member {
 	return results
 }
 
-/* 保存 */
+// 保存
 func (this *Member) Save() {
-	colQuerier := bson.M{"_id": this.Id}
-	err := Db.C("member").Update(colQuerier, this)
-	if err != nil {
-		//处理错误
-	}
+	Db.C("member").Update(bson.M{"_id": this.Id}, this)
+}
+
+// 删除用户
+func (this *Member) Remove() bool {
+	err := Db.C("member").Remove(bson.M{"_id": this.Id})
+	return err == nil
 }

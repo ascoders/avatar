@@ -1,0 +1,43 @@
+<div class='f-ct f-mt20' id='user' ms-controller='user'>
+	<div class="g-bd1 f-cb">
+		<div class="g-sd1 g-bd">
+			<img class='user-img' ms-src='user.i'>
+			<div class='user-name'>{[{user.n}]}</div>
+			<div class='f-cb f-mt20'>
+				<div class='f-w6 left-list'>发布：{[{user.a}]}</div>
+				<div class='f-w6 left-list'>评论：{[{user.r}]}</div>
+			</div>
+			<div class='f-cb f-mt20'>
+				<div class='f-w6 left-list'>注册：<span class='timeago' ms-attr-title='user.t'></span></div>
+				<div class='f-w6 left-list'>等级：{[{user.a + user.r | setLevel}]}</div>
+			</div>
+			<div class='f-cb f-mt20 f-mb20'>
+				<div class='f-w12 left-list'>
+					信息：
+					<a ms-if='user.l != ""' class='btn btn-default github' ms-href='https://github.com/{[{user.l}]}' target='_blank'><i class="fa fa-github f-fs20"></i></a>
+				</div>
+			</div>
+		</div>
+		<div class="g-mn1">
+			<div class="g-mn1c"> 
+				<div class='g-bd'>
+					<a class='box' ms-repeat='lists' data-repeat-rendered='rendered' ms-href='#!/art/{[{el._id}]}'>
+	          <span class='tag tag-category'>{[{el._c}]}</span>
+	          <!-- 标题 -->
+	          {[{el.t}]}
+	          <div class='f-fr'>
+	            <img class='last-reply-img f-mr5' ms-if='el.li' ms-src='el.li'>
+	            <span class='status f-rm5 f-fs14'><span class='f-fwb'>{[{el.r}]}</span> / {[{el.v}]}</span>
+	            <span class='timeago f-fs14' ms-attr-title='el.tm'></span>
+	          </div> 
+	        </a>
+	      </div>
+
+        <!-- 分页按纽 -->
+        <div class="g-bd f-mt10 f-cb" ms-if='pagin != ""'>
+          {[{pagin | html}]}
+        </div>
+			</div>
+		</div>
+	</div>
+</div>

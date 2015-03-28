@@ -574,7 +574,7 @@ var global = avalon.define({
 			window.location.href = 'https://github.com/login/oauth/authorize?client_id=c6d10825049147370ff2&redirect_uri=http://www.avalon.org.cn/oauth&state=' + data;
 		});
 	},
-	otherLogin: function (name) { // 出github以外，其他第三方登陆
+	otherLogin: function (name) { // 除github以外，其他第三方登陆
 		require(['frontia'], function (frontia) {
 			// API key 从应用信息页面获取
 			var AK = '6NfcaqlPimQxS9buDbFGG6iP';
@@ -655,7 +655,6 @@ require(['jquery', 'mmState'], function ($) {
 
 		},
 		onError: function (err) {
-			console.log(err);
 			avalon.router.navigate("/404");
 		}
 	})
@@ -722,6 +721,55 @@ require(['jquery', 'mmState'], function ($) {
 		url: "/oauth/jump",
 		onEnter: function () {
 			location.href = "https://openapi.baidu.com/social/oauth/2.0/receiver" + location.search;
+		},
+	});
+
+	// 用户账号
+	avalon.state("user", {
+		controller: "global",
+		url: "/user/{id}",
+		views: {
+			"container": {
+				templateUrl: '/static/html/user/user.html',
+				controllerUrl: ["../user/user"],
+				ignoreChange: function (changeType) {
+					if (changeType) return true;
+				},
+			}
+		},
+	});
+
+	// 用户设置（需用户权限）
+	avalon.state("setting", {
+		controller: "global",
+		url: "/setting",
+		views: {
+			"container": {
+				templateUrl: '/static/html/setting/setting.html',
+				controllerUrl: ["../setting/setting"],
+				ignoreChange: function (changeType) {
+					if (changeType) return true;
+				},
+			}
+		},
+	});
+
+	avalon.state("setting.settings", {
+		controller: "setting",
+		url: "/{type}",
+		views: {
+			"settingContainer": {
+				templateUrl: function (param) {
+					return '/static/html/setting/' + param.type + '.html';
+				},
+				controllerUrl: function (param) {
+					console.log(param.type);
+					return ["../setting/" + param.type];
+				},
+				ignoreChange: function (changeType) {
+					if (changeType) return true;
+				},
+			}
 		},
 	});
 

@@ -60,6 +60,8 @@ func init() {
 			beego.NSRouter("/user", &controllers.UserController{}, "post:User"),
 			//获取用户热评和被忽视的文章
 			beego.NSRouter("/getHotCold", &controllers.UserController{}, "post:GetHotCold"),
+			//获取用户文章
+			beego.NSRouter("/getArticles", &controllers.UserController{}, "post:GetArticles"),
 			//获取第三方平台绑定状况列表
 			beego.NSRouter("/oauthList", &controllers.UserController{}, "post:OauthList"),
 			//第三方平台绑定 新增/更新

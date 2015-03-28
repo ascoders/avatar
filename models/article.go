@@ -132,6 +132,19 @@ func (this *Article) FindUserCold(id bson.ObjectId) []*Article {
 	return result
 }
 
+// 查询某用文章
+func (this *Article) FindUserArticles(id bson.ObjectId, from int, number int) []*Article {
+	var result []*Article
+	Db.C("article").Find(bson.M{"u": id}).Select(bson.M{"co": 0}).Skip(from).Limit(number).All(&result)
+	return result
+}
+
+// 查询某用文章数量
+func (this *Article) FindUserArticlesCount(id bson.ObjectId) int {
+	count, _ := Db.C("article").Find(bson.M{"u": id}).Select(bson.M{"co": 0}).Count()
+	return count
+}
+
 // 更新内容 会同时更新挖坟日期
 func (this *Article) UpdateContent() {
 	Db.C("article").Update(bson.M{"_id": this.Id}, bson.M{"$set": bson.M{

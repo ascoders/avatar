@@ -65,6 +65,36 @@ func (this *UserController) GetHotCold() {
 	this.ServeJson()
 }
 
+// 获取用户文章
+func (this *UserController) GetArticles() {
+	ok, data := func() (bool, interface{}) {
+		member := &models.Member{}
+		if _ok, _data := member.FindOne(this.GetString("id")); !_ok {
+			return false, _data
+		}
+
+		article := &models.Article{}
+
+		// 查询用户文章
+		from, _ := this.GetInt("from")
+		number, _ := this.GetInt("number")
+
+		articles := article.FindUserArticles(member.Id, from, number)
+		count := article.FindUserArticlesCount(member.Id)
+
+		return true, map[string]interface{}{
+			"lists": articles,
+			"count": count,
+		}
+	}()
+
+	this.Data["json"] = map[string]interface{}{
+		"ok":   ok,
+		"data": data,
+	}
+	this.ServeJson()
+}
+
 //获取github信息
 func (this *UserController) GetGithub() {
 	ok, data := func() (bool, interface{}) {
@@ -91,28 +121,52 @@ func (this *UserController) GetGithub() {
 
 /* 获取第三方平台绑定状况列表 */
 func (this *UserController) OauthList() {
-	/*
+	ok, data := func() (bool, interface{}) {
+		member := &models.Member{}
+
+		var session interface{}
+		if session = this.GetSession("ID"); session == nil {
+			return false, "未登录"
+		}
+
+		if _ok, _ := member.FindOne(session.(string)); !_ok {
+			return false, "用户不存在"
+		}
+
 		//查询该用户绑定的平台
 		party := &models.Party{}
-		partys := party.FindBinds(this.member.Id)
+		partys := party.FindBinds(member.Id)
 
-		this.Data["json"] = map[string]interface{}{
-			"ok":   true,
-			"data": partys,
-		}
-		this.ServeJson()
-	*/
+		return true, partys
+	}()
+
+	this.Data["json"] = map[string]interface{}{
+		"ok":   ok,
+		"data": data,
+	}
+	this.ServeJson()
 }
 
 /* 第三方平台绑定 */
 func (this *UserController) Oauth() {
-	/*
-		ok, data := func() (bool, interface{}) {
-			//检测token是否合法
-			if ok := BaiduSocialCheck(this.GetString("token"), this.GetString("id")); !ok {
-				return false, "token不合法"
-			}
+	ok, data := func() (bool, interface{}) {
+		member := &models.Member{}
 
+		var session interface{}
+		if session = this.GetSession("ID"); session == nil {
+			return false, "未登录"
+		}
+
+		if _ok, _ := member.FindOne(session.(string)); !_ok {
+			return false, "用户不存在"
+		}
+
+		//检测token是否合法
+		if ok := BaiduSocialCheck(this.GetString("token"), this.GetString("id")); !ok {
+			return false, "token不合法"
+		}
+
+		/*
 			var plantform string
 			switch this.GetString("type") {
 			case "baidu":
@@ -128,22 +182,22 @@ func (this *UserController) Oauth() {
 			case "kaixin":
 				plantform = "开心网"
 			}
+		*/
 
-			party := &models.Party{}
-			//查询是否存在
-			if ok := party.IdExist(this.GetString("id")); ok { //已存在，是更新授权操作
-				party.RefreshAuthor(this.GetString("id"), this.GetString("type"), this.GetString("token"), this.GetString("expire"))
-			} else { //不存在，新增第三方关联
-				party.Insert(this.GetString("id"), this.GetString("type"), this.member.Id.Hex(), this.GetString("token"), this.GetString("nickname"), this.GetString("image"), this.GetString("expire"))
-			}
-
-			return true, nil
-		}()
-
-		this.Data["json"] = map[string]interface{}{
-			"ok":   ok,
-			"data": data,
+		party := &models.Party{}
+		//查询是否存在
+		if ok := party.IdExist(this.GetString("id")); ok { //已存在，是更新授权操作
+			party.RefreshAuthor(this.GetString("id"), this.GetString("type"), this.GetString("token"), this.GetString("expire"))
+		} else { //不存在，新增第三方关联
+			party.Insert(this.GetString("id"), this.GetString("type"), member.Id.Hex(), this.GetString("token"), this.GetString("nickname"), this.GetString("image"), this.GetString("expire"))
 		}
-		this.ServeJson()
-	*/
+
+		return true, nil
+	}()
+
+	this.Data["json"] = map[string]interface{}{
+		"ok":   ok,
+		"data": data,
+	}
+	this.ServeJson()
 }

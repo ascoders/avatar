@@ -1,0 +1,30 @@
+#setting {
+	/* 两列右侧自适应布局 */
+	.g-bd1 {
+		margin: 0 0 10px;
+	}
+	.g-sd1 {
+		position: relative;
+		float: left;
+		width: 200px;
+		margin-right: -200px;
+	}
+	.g-mn1 {
+		float: right;
+		width: 100%;
+	}
+	.g-mn1c {
+		margin-left: 210px;
+	}
+	.menu {
+		background: white;
+		.menu-list {
+			display: block;
+			padding: 10px;
+			&.active {
+				background: #28966F;
+				color: white;
+			}
+		}
+	}
+}

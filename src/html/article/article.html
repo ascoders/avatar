@@ -5,7 +5,7 @@
 	      <div class='g-bd f-p20'>
 	      	<div class='title'>{[{article.t}]}</div>
 	      	<div class='info f-cb f-pr'>
-            <span class='f-mr5'>{[{author.n}]}：<span class='timeago' ms-attr-title='article.tm'></span></span>
+            <span class='f-mr5'><a ms-href='#!/user/{[{author._id}]}'>{[{author.n}]}</a>：<span class='timeago' ms-attr-title='article.tm'></span></span>
 	      		<span class='f-mr5'>浏览量：{[{article.v}]}</span>
             <span class='f-mr5'>评论：{[{article.r}]}</span>
             <select class='f-pa operate-select' ms-if='my._id == article.u || my.ad' style='right:240px;bottom:0;' ms-duplex-int='article.c' ms-change='changeCategory(article.c)'>
@@ -36,7 +36,7 @@
 	      		<div class='title'>
 	      			<img class='img' ms-src='el.ui'>
               [{[{el.ua + el.ur | setLevel}]}]
-	      			{[{el.un}]}
+	      			<a ms-href='#!/user/{[{el._id}]}'>{[{el.un}]}</a>
 	      		</div>
 	      		<div class='detail'>
              {[{el.co | html}]}
@@ -62,10 +62,14 @@
         </div>
       </div>
     </div>
+    
     <div class="g-sd2">
       <div class='g-bd f-p20'>
       	<img class='author-image' ms-if='author.i' ms-src='author.i'>
-      	<div class='f-mt10'><a ms-href='https://github.com/{[{author.l}]}' class='btn btn-default github'><i class="fa fa-github f-mr5"></i>{[{author.n}]}</a></div>
+        <a class='user-name' ms-href='#!/user/{[{author._id}]}'>{[{author.n}]}</a>
+      	<div class='f-mt10'>
+          <a ms-if='user.l != ""' class='btn btn-default github' ms-href='https://github.com/{[{author.l}]}' target='_blank'><i class="fa fa-github"></i></a>
+        </div>
       	<div class='f-mt10'>注册：<span class='timeago' ms-attr-title='author.t'></span></div>
       	<div class='f-cb f-mt10'>
       		<div class='f-w6'>发布：{[{author.a}]}</div>

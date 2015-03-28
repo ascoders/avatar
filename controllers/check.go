@@ -66,35 +66,60 @@ func (this *CheckController) Register() {
 			return false, "非法请求"
 		}
 
-		//检查该token用户是否存在
+		// 是否已登陆
+		var login bool
+
 		member := &models.Member{}
-		if _ok, _ := member.FindToken(this.GetString("token")); _ok { //查到了
+
+		var session interface{}
+		if session = this.GetSession("ID"); session != nil {
+			if _ok, _ := member.FindOne(session.(string)); _ok {
+				login = true
+			}
+		}
+
+		if !login { // 未登录
+			//检查该token用户是否存在
+			member := &models.Member{}
+			if _ok, _ := member.FindToken(this.GetString("token")); _ok { //查到了
+				//生成session
+				this.SetSession("ID", member.Id.Hex())
+
+				//返回用户信息
+				return true, member
+			}
+
+			member.NickName = this.GetString("nickname")
+			member.Login = this.GetString("login")
+			member.Image = this.GetString("image")
+			member.Token = this.GetString("token")
+
+			//用户名为空，采用login代替
+			if member.NickName == "" {
+				member.NickName = member.Login
+			}
+
+			if _ok, _data := member.Insert(); !_ok {
+				return false, _data
+			}
+
 			//生成session
 			this.SetSession("ID", member.Id.Hex())
 
 			//返回用户信息
 			return true, member
+		} else { // 已登录
+			//检查该token用户是否存在
+			member := &models.Member{}
+			if _ok, _ := member.FindToken(this.GetString("token")); _ok { //查到了
+				return true, "exist"
+			} else { // 不存在，绑定github
+				member.Login = this.GetString("login")
+				member.Token = this.GetString("token")
+				member.Save()
+				return true, "bind"
+			}
 		}
-
-		member.NickName = this.GetString("nickname")
-		member.Login = this.GetString("login")
-		member.Image = this.GetString("image")
-		member.Token = this.GetString("token")
-
-		//用户名为空，采用login代替
-		if member.NickName == "" {
-			member.NickName = member.Login
-		}
-
-		if _ok, _data := member.Insert(); !_ok {
-			return false, _data
-		}
-
-		//生成session
-		this.SetSession("ID", member.Id.Hex())
-
-		//返回用户信息
-		return true, member
 	}()
 
 	this.Data["json"] = map[string]interface{}{
@@ -148,16 +173,15 @@ func (this *CheckController) SignOut() {
 // 社交化平台查询是否有账号，若有自动登陆
 func (this *CheckController) HasOauth() {
 	ok, data := func() (bool, interface{}) {
-		party := &models.Party{}
-		// 查询账号是否存在
-		ok := party.FindMember(this.GetString("id"), this.GetString("type"))
-		if !ok { // 用户不存在，显示创建用户信息
-			return true, -1
-		}
-
-		// 用户已存在
 		if !BaiduSocialCheck(this.GetString("token"), this.GetString("id")) { //通过不验证
 			return false, "验证失败"
+		}
+
+		party := &models.Party{}
+		// 查询第三方账号是否存在
+		ok := party.FindMember(this.GetString("id"), this.GetString("type"))
+		if !ok || this.GetSession("ID") != nil { // 用户不存在（或者当前用户已登陆），直接注册
+			return true, -1
 		}
 
 		// 刷新验证权限
@@ -188,39 +212,66 @@ func (this *CheckController) HasOauth() {
 /* 第三方平台注册用户 */
 func (this *CheckController) OauthRegister() {
 	ok, data := func() (bool, interface{}) {
+		// 是否已登陆
+		var login bool
+
 		member := &models.Member{}
+
+		var session interface{}
+		if session = this.GetSession("ID"); session != nil {
+			if _ok, _ := member.FindOne(session.(string)); _ok {
+				login = true
+			}
+		}
+
 		party := &models.Party{}
 
-		if this.GetString("nickname") == "" {
-			return false, "昵称不能为空"
+		if !login { // 未登录，注册第三方账号并登录
+			if this.GetString("nickname") == "" {
+				return false, "昵称不能为空"
+			}
+
+			//查找是否有重复第三方id
+			if ok := party.IdExist(this.GetString("id")); ok { //已存在
+				return false, "该平台已经注册了账号"
+			}
+
+			//检测token是否合法
+			if ok := BaiduSocialCheck(this.GetString("token"), this.GetString("id")); !ok {
+				return false, "参数非法"
+			}
+
+			//插入用户
+			member.NickName = this.GetString("nickname")
+			member.Image = this.GetString("image")
+
+			if _ok, _ := member.Insert(); !_ok {
+				return false, "新增用户失败"
+			}
+
+			//插入第三方关联
+			party.Insert(this.GetString("id"), this.GetString("type"), member.Id.Hex(), this.GetString("token"), this.GetString("nickname"), this.GetString("image"), this.GetString("expire"))
+
+			//生成session
+			this.SetSession("ID", member.Id.Hex())
+
+			//查询用户信息
+			return true, member
+		} else { // 已登陆，绑定已有账号
+			// 此时用户已登陆，判断新绑定的第三方账号是否已存在
+			// 第三方账号是否存在
+			if ok := party.IdExist(this.GetString("id")); ok { //已存在
+				if party.MemberId == member.Id { // 更新授权
+					party.RefreshAuthor(this.GetString("id"), this.GetString("type"), this.GetString("token"), this.GetString("expire"))
+				} else { // 已存在第三方账号对应用户，与已登录用户不一致
+					return true, "thridExist"
+				}
+			} else { //不存在，新增第三方关联
+				party.Insert(this.GetString("id"), this.GetString("type"), member.Id.Hex(), this.GetString("token"), this.GetString("nickname"), this.GetString("image"), this.GetString("expire"))
+			}
+
+			return true, "thrid"
 		}
-
-		//查找是否有重复第三方id
-		if ok := party.IdExist(this.GetString("id")); ok { //已存在
-			return false, "该平台已经注册了账号"
-		}
-
-		//检测token是否合法
-		if ok := BaiduSocialCheck(this.GetString("token"), this.GetString("id")); !ok {
-			return false, "参数非法"
-		}
-
-		//插入用户
-		member.NickName = this.GetString("nickname")
-		member.Image = this.GetString("image")
-
-		if _ok, _ := member.Insert(); !_ok {
-			return false, "新增用户失败"
-		}
-
-		//插入第三方关联
-		party.Insert(this.GetString("id"), this.GetString("type"), member.Id.Hex(), this.GetString("token"), this.GetString("nickname"), this.GetString("image"), this.GetString("expire"))
-
-		//生成session
-		this.SetSession("ID", member.Id.Hex())
-
-		//查询用户信息
-		return true, member
 	}()
 
 	this.Data["json"] = map[string]interface{}{

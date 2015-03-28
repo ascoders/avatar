@@ -1,0 +1,42 @@
+#user {
+	/* 两列右侧自适应布局 */
+	.g-bd1 {
+		margin: 0 0 10px;
+	}
+	.g-sd1 {
+		position: relative;
+		float: left;
+		width: 400px;
+		margin-right: -400px;
+	}
+	.g-mn1 {
+		float: right;
+		width: 100%;
+	}
+	.g-mn1c {
+		margin-left: 410px;
+	}
+	.user-img {
+		width: 300px;
+		height: 300px;
+		margin: 10px 50px;
+	}
+	.user-name {
+		font-size: 35px;
+		text-align: center;
+		margin-top: 10px;
+	}
+	.left-list {
+		font-size: 18px;
+		padding-left: 20px;
+	}
+	.box {
+		display: block;
+		padding: 10px;
+	}
+	.status {
+		padding: 1px 5px;
+		color: white;
+		background: #28966F;
+	}
+}
