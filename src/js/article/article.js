@@ -15,15 +15,19 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 		tag: false, //是否在编辑标签状态
 		rTag: false, //是否在删除标签状态
 		$tuhua: false, // 是否加载了图话
-		temp: {
+		$temp: {
 			editor: null,
 			from: 0,
 			number: 0,
 			freshSame: function () { // 获取类似类容
 				post('/api/tag/same', {
-					article: vm.article._id,
+					article: vm.article._id
 				}, null, '', function (data) {
 					for (var key in data) {
+						if (!data.hasOwnProperty(key) || key === "hasOwnProperty") {
+							continue;
+						}
+
 						//如果没有标题，取内容
 						if (data[key].t == "") {
 							data[key].t = subStr(data[key].co, 0, 25);
@@ -35,7 +39,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 
 					vm.same = data || [];
 				});
-			},
+			}
 		},
 		inputContent: '', //提交评论内容
 		submit: function () { //提交评论
@@ -60,22 +64,22 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 			if (!vm.edit) {
 				post('/api/article/addReply', {
 					article: vm.article._id,
-					content: vm.inputContent,
+					content: vm.inputContent
 				}, '评论成功', '', function () {
 					//清空输入内容
 					vm.inputContent = '';
 
 					//跳转到最后一页
 					avalon.router.navigate('/art/' + vm.article._id +
-						'?number=' + vm.temp.number + '&from=' +
-						Math.floor(parseInt(vm.article.r) / vm.temp.number) * vm.temp.number, {
+						'?number=' + vm.$temp.number + '&from=' +
+						Math.floor(parseInt(vm.article.r) / vm.$temp.number) * vm.$temp.number, {
 							reload: true
 						});
 				});
 			} else {
 				post('/api/article/edit', {
 					id: vm.article._id,
-					content: vm.inputContent,
+					content: vm.inputContent
 				}, '更新成功', '', function () {
 					//清空输入内容
 					vm.inputContent = '';
@@ -97,14 +101,14 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 			if (vm.article.tp == 0) {
 				post('/api/article/top', {
 					id: vm.article._id,
-					top: true,
+					top: true
 				}, '已置顶', '', function (data) {
 					vm.article.tp = 1;
 				});
 			} else {
 				post('/api/article/top', {
 					id: vm.article._id,
-					top: false,
+					top: false
 				}, '已取消置顶', '', function (data) {
 					vm.article.tp = 0;
 				});
@@ -114,7 +118,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 		deleteArticle: function () { // 删除
 			confirm('删除此文章吗', function () {
 				post('/api/article/delete', {
-					id: vm.article._id,
+					id: vm.article._id
 				}, '成功删除', '', function (data) {
 					// 移动到首页
 					avalon.router.navigate('/');
@@ -127,7 +131,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 			vm.inputContent = vm.article.co;
 
 			//同步review
-			vm.temp.editor.freshPreview();
+			vm.$temp.editor.freshPreview();
 
 			//滑到编辑区
 			$("html, body").animate({
@@ -169,7 +173,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 
 			post('/api/tag/bind', {
 				article: vm.article._id,
-				name: vm.addTagInput,
+				name: vm.addTagInput
 			}, '标签已添加', '', function (data) {
 				vm.article.ta.push(vm.addTagInput);
 
@@ -180,19 +184,19 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 				vm.tag = false;
 
 				// 获取类似文章
-				vm.temp.freshSame();
+				vm.$temp.freshSame();
 			});
 		},
 		jumpOrRemove: function (name) {
 			if (vm.rTag) {
 				post('/api/tag/unBind', {
 					article: vm.article._id,
-					name: name,
+					name: name
 				}, '标签已删除', '', function (data) {
 					vm.article.ta.remove(name);
 
 					// 获取类似文章
-					vm.temp.freshSame();
+					vm.$temp.freshSame();
 				});
 			} else {
 				avalon.router.navigate('/?tag=' + name);
@@ -207,14 +211,12 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 		changeCategory: function (value) { // 改变分类
 			post('/api/article/changeCategory', {
 				article: vm.article._id,
-				category: value,
+				category: value
 			}, '修改成功', '');
-		},
-		$skipArray: ['temp'],
+		}
 	});
 
 	return avalon.controller(function ($ctrl) {
-		// $ctrl.$vmodels = [vm];
 
 		$ctrl.$onEnter = function (param, rs, rj) {
 			// 初始化状态
@@ -223,7 +225,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 
 			//获取文章信息
 			post('/api/article/article', {
-				id: param.id,
+				id: param.id
 			}, null, '文章不存在', function (data) {
 				//文章内容markdown解析
 				data.coHtml = marked(data.co);
@@ -231,8 +233,8 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 
 				mmState.query.from = mmState.query.from || 0;
 				mmState.query.number = mmState.query.number || 20;
-				vm.temp.from = mmState.query.from;
-				vm.temp.number = mmState.query.number;
+				vm.$temp.from = mmState.query.from;
+				vm.$temp.number = mmState.query.number;
 
 				//生成分页
 				vm.pagin = createPagin(mmState.query.from, mmState.query.number, data.r);
@@ -254,7 +256,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 				post('/api/article/reply', {
 					article: vm.article._id,
 					from: mmState.query.from,
-					number: mmState.query.number,
+					number: mmState.query.number
 				}, null, '取评论失败', function (_data) {
 					// 解析回复作者信息
 					var replyMembers = {};
@@ -264,6 +266,10 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 					}
 
 					for (var key in _data.reply) {
+						if (!_data.reply.hasOwnProperty(key) || key === "hasOwnProperty") {
+							continue;
+						}
+
 						// markdown解析
 						_data.reply[key].co = marked(_data.reply[key].co);
 
@@ -276,10 +282,6 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 					}
 
 					vm.replys = _data.reply;
-
-
-
-					vm.replyMembers = replyMembers;
 				});
 
 				//获取作者信息
@@ -287,7 +289,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 					setUserInfo(avalon.vmodels.global.temp.users[data.u]);
 				} else {
 					post('/api/user/user', {
-						id: data.u,
+						id: data.u
 					}, null, '获取作者信息失败', function (_data) {
 						//保存进缓存
 						avalon.vmodels.global.temp.users[data.u] = _data;
@@ -301,7 +303,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 					vm.cold = avalon.vmodels.global.temp.userHotCold[data.u].cold || [];
 				} else {
 					post('/api/user/getHotCold', {
-						id: data.u,
+						id: data.u
 					}, null, '获取作者文章失败', function (_data) {
 						//保存进缓存
 						avalon.vmodels.global.temp.userHotCold[data.u] = _data;
@@ -311,7 +313,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 				}
 
 				// 获取类似文章
-				vm.temp.freshSame();
+				vm.$temp.freshSame();
 
 			}, function () { //页面不存在
 				avalon.router.navigate('/404');
@@ -320,9 +322,9 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 
 		$ctrl.$onRendered = function () {
 			//实例化markdown编辑器
-			vm.temp.editor = new $("#article #editor").MarkEditor();
+			vm.$temp.editor = new $("#article #editor").MarkEditor();
 
-			vm.temp.editor.createDom();
+			vm.$temp.editor.createDom();
 
 			//获取xsrftoken
 			var xsrf = $.cookie("_xsrf");
@@ -338,7 +340,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 				type: 'post',
 				deferRequestBy: 300,
 				params: {
-					_xsrf: xsrftoken,
+					_xsrf: xsrftoken
 				},
 				onSelect: function (suggestion) {
 					vm.addTagInput = suggestion.value;

@@ -62,6 +62,12 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 		};
 
 		this.createDom = function () { // 刷新dom
+			// ie7及其以下没有此功能
+			if (ieVersion() != false && ieVersion() <= 7) {
+				$(tools).remove();
+				return;
+			}
+
 			for (var key in buttons) {
 				var button = $("<div/>")
 					.addClass('i f-hvc effect fa fa-' + key)
@@ -71,13 +77,14 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 				button.jBox('Tooltip', {
 					content: buttons[key]
 				});
+
 				switch (key) {
 				case 'header':
 					button.addClass('j-ul-list');
 					var ul = $("<ul/>").appendTo(button).addClass('f-bln');
 					var headers = [
-					"h1", "h2", "h3", "h4", "h5", "h6"
-				];
+						"h1", "h2", "h3", "h4", "h5", "h6"
+					];
 					for (var item in headers) {
 						var li = $("<li/>").appendTo(ul).addClass('effect');
 						li.text(headers[item]).attr("type", headers[item]);
@@ -94,6 +101,11 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 					}
 					break;
 				case 'image': //图片上传
+					// ie8及其以下没有此功能
+					if (ieVersion() != false && ieVersion() <= 8) {
+						break;
+					}
+
 					createDropzone(button[0], 'http://upload.qiniu.com', opts.uploadParams, ".jpg,.jpeg,.png,.gif,.ico", function (data, file) {
 						_this.selection('insert', {
 							text: '\n![' + file.name + '](http://avatar.img.wokugame.com/' + data.name + ')',
@@ -612,6 +624,6 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 
 	$.fn.MarkEditor.defaults = {
 		uploadUrl: '',
-		uploadParams: [],
+		uploadParams: []
 	};
 });

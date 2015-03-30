@@ -15,8 +15,9 @@
 		height: 40px;
 		.category {
 			padding: 0 10px;
-			line-height: 40px;
+			height: 40px;
 			float: left;
+			line-height: 40px;
 			&:hover, &.active {
 				background: white;
 				color: #28966F;
@@ -55,7 +56,8 @@
 	}
 	.box {
 		background: white;
-		padding: 15px 10px 15px 50px;
+		padding: 0 10px 0 50px;
+		line-height: 50px;
 		display: block;
 		color: #333;
 		font-size: 15px;
@@ -135,7 +137,7 @@
 	.friend {
 		.box {
 			display: inline-block;
-			width: auto;
+			width: 100px;
 			height: auto;
 			padding: 0;
 			.common-box {

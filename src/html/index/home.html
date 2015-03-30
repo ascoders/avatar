@@ -3,8 +3,8 @@
   	<div class="g-mn2">
       <div class="g-mn2c">
         <div class='bar f-pr'>
-          <div ms-repeat='categorys' class='category' ms-class='active:$val == category && searchTag == ""' ms-click='changeCategory($val)'>
-            {[{$key | html}]}
+          <div ms-repeat='categorys' class='category' ms-class='active:el.value == category && searchTag == ""' ms-click='changeCategory(el.value)'>
+            {[{el.key | html}]}
           </div>
           <div class='category active' ms-if='searchTag != ""'>
             <i class='fa fa-tag f-mr5'></i>{[{searchTag}]}
@@ -30,7 +30,7 @@
           {[{el.t}]}
           <div class='f-fr'>
             <img class='last-reply-img f-mr5' ms-if='el.li' ms-src='el.li'>
-            <span class='timeago' ms-attr-title='el.tm'></span>&nbsp;
+            <span class='timeago' ms-attr-title='el.tl'></span>&nbsp;
             <span class='status'><span class='f-fwb'>{[{el.r}]}</span> / {[{el.v}]}</span>
           </div> 
         </a>
@@ -65,6 +65,9 @@
         <div class="g-bd f-p20 f-mt20">
           <p>
             avalon中文社区 <a href='https://github.com/ascoders/avatar' target='_blank'>代码开源地址</a>
+          </p>
+          <p>
+            全面支持 ie5+ <a href='https://github.com/ascoders/avatar/issues/5' target='_blank'>浏览器版本越高体验越好、功能越多</a>
           </p>
           <p>
             访问 <a href='http://www.cnblogs.com/rubylouvre/' target='_blank'>司徒正美博客</a> 获取avalon最新信息

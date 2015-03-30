@@ -159,9 +159,12 @@ html.dark {
     background: #222;
 }
 input, select, textarea {
-    padding: 10px;
+    padding: 0 10px;
     border: 1px solid #ccc;
     margin: 0px;
+}
+textarea {
+    padding: 10px;
 }
 input, textarea {
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075);
@@ -435,10 +438,14 @@ td {
     ul {
         margin: 0;
         padding: 0;
+        display: inline;
+        overflow: hidden;
     }
     ul li {
         list-style: none;
         float: left;
+        display: inline;
+        overflow: hidden;
         padding: 0;
         span {
             line-height: 40px;
@@ -472,6 +479,7 @@ td {
         border: 1px solid #ccc;
         border-top: none;
         margin-top: -1px;
+        z-index: 10000;
     }
     .j-drop-content li {
         float: none;
@@ -1646,6 +1654,7 @@ li.L1, li.L3, li.L5, li.L7, li.L9 {
             cursor: hand;
             cursor: pointer;
             color: #444;
+            display: inline-block;
             &:hover {
                 background: white;
             }

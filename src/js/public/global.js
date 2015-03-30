@@ -6,7 +6,7 @@
 
 //改变模板标签
 avalon.config({
-	interpolate: ["{[{", "}]}"],
+	interpolate: ["{[{", "}]}"]
 });
 
 // 过滤markdown标签
@@ -44,6 +44,7 @@ avalon.filters.setLevel = function (str) { // 发布*2 评论*1
 require.config({
 	paths: {
 		"jquery": "http://cdn.bootcss.com/jquery/1.11.2/jquery.min",
+		"jQuery": "http://cdn.bootcss.com/jquery/1.11.2/jquery.min",
 		"jquery.timeago": "http://cdn.bootcss.com/jquery-timeago/1.4.0/jquery.timeago.min", //友好时间
 		"jquery.ui": "http://cdn.bootcss.com/jqueryui/1.10.4/jquery-ui.min", //jquery-ui
 		"jquery.autosize": "http://cdn.bootcss.com/autosize.js/1.18.15/jquery.autosize.min", //textarea大小自适应高度
@@ -62,43 +63,43 @@ require.config({
 		"jquery.jbox": "jBox", //迷你提示框
 		"marked": "marked", //markdown解析器
 		"editor": "editor", //编辑器
-		"frontia": "baidu.frontia.1.0.0", //百度社会化组件
+		"frontia": "baidu.frontia.1.0.0" //百度社会化组件
 	},
 	shim: {
 		'jquery.timeago': {
-			deps: ['jquery'],
+			deps: ['jquery']
 		},
 		'jquery.ui': {
-			deps: ['jquery'],
+			deps: ['jquery']
 		},
 		'jquery.jbox': {
-			deps: ['jquery'],
+			deps: ['jquery']
 		},
 		'jquery.autosize': {
-			deps: ['jquery'],
+			deps: ['jquery']
 		},
 		'jquery.taboverride': {
-			deps: ['jquery'],
+			deps: ['jquery']
 		},
 		'jquery.selection': {
-			deps: ['jquery'],
+			deps: ['jquery']
 		},
 		'jquery.qrcode': {
-			deps: ['jquery'],
+			deps: ['jquery']
 		},
 		'jquery.typetype': {
-			deps: ['jquery'],
+			deps: ['jquery']
 		},
 		'md5': {
-			exports: 'md5',
+			exports: 'md5'
 		},
 		'frontia': {
-			exports: 'baidu.frontia',
+			exports: 'baidu.frontia'
 		},
 		'contextMenu': {
-			deps: ['jquery'],
-		},
-	},
+			deps: ['jquery']
+		}
+	}
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +116,7 @@ function notice(text, color) {
 				y: 'bottom'
 			},
 			animation: 'flip',
-			color: color,
+			color: color
 		});
 	});
 }
@@ -273,7 +274,7 @@ function post(url, params, success, error, callback, errorback) {
 				url: url,
 				type: 'POST',
 				traditional: true, //为了传数组
-				data: postParam,
+				data: postParam
 			})
 			.done(function (data) {
 				if (data.ok) { //操作成功
@@ -346,13 +347,13 @@ function createDropzone(obj, url, params, accept, callback) {
 						color: 'black',
 						animation: {
 							open: 'slide:bottom',
-							close: 'slide:left',
+							close: 'slide:left'
 						},
 						autoClose: false,
 						closeOnClick: false,
 						onCloseComplete: function () {
 							this.destroy();
-						},
+						}
 					});
 
 					var _this = this;
@@ -434,7 +435,7 @@ function createDropzone(obj, url, params, accept, callback) {
 function timediff(element, options, callback) {
 	//初始化
 	var defaults = {
-		second: 0,
+		second: 0
 	};
 	var opts = $.extend(defaults, options);
 	opts.second = parseInt(opts.second);
@@ -485,10 +486,19 @@ function jbox() {
 			$(this).jBox('Tooltip', {
 				content: title,
 				animation: 'zoomIn',
-				closeOnMouseleave: true,
+				closeOnMouseleave: true
 			});
 		});
 	});
+}
+
+// 判断ie9及其以下版本
+function ieVersion() {
+	var v = 3,
+		div = document.createElement('div'),
+		all = div.getElementsByTagName('i');
+	while (div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->', all[0]);
+	return v > 4 ? v : false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -567,7 +577,7 @@ var global = avalon.define({
 		myDeferred: null, // 我的信息执行状态
 		state: '', //当前状态
 		users: {}, //保存用户信息
-		userHotCold: {}, //保存用户热评冷门文章信息
+		userHotCold: {} //保存用户热评冷门文章信息
 	}, // 缓存
 	github: function () { //github登陆按钮
 		post('/api/check/setState', null, null, '', function (data) {
@@ -615,7 +625,7 @@ var global = avalon.define({
 			}
 		});
 	},
-	$skipArray: ['emptyObject', 'temp'],
+	$skipArray: ['emptyObject', 'temp']
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -638,7 +648,7 @@ require(['jquery', 'mmState'], function ($) {
 	$.ajax({
 		url: 'https://api.github.com/repos/RubyLouvre/avalon',
 		type: 'GET',
-		dataType: "jsonp",
+		dataType: "jsonp"
 	}).done(function (data) {
 		global.avalon = data.data;
 	});
@@ -665,9 +675,9 @@ require(['jquery', 'mmState'], function ($) {
 		url: "/404",
 		views: {
 			"container": {
-				templateUrl: '/static/html/public/404.html',
+				templateUrl: '/static/html/public/404.html'
 			}
-		},
+		}
 	});
 
 	//首页
@@ -680,9 +690,9 @@ require(['jquery', 'mmState'], function ($) {
 				controllerUrl: ["../index/index"],
 				ignoreChange: function (changeType) {
 					if (changeType) return true;
-				},
+				}
 			}
-		},
+		}
 	});
 
 	// 文章页面
@@ -695,9 +705,9 @@ require(['jquery', 'mmState'], function ($) {
 				controllerUrl: ["../article/article"],
 				ignoreChange: function (changeType) {
 					if (changeType) return true;
-				},
+				}
 			}
-		},
+		}
 	});
 
 	// 回调页面
@@ -710,18 +720,14 @@ require(['jquery', 'mmState'], function ($) {
 				controllerUrl: ["../check/oauth"],
 				ignoreChange: function (changeType) {
 					if (changeType) return true;
-				},
+				}
 			}
-		},
+		}
 	});
 
 	// 第三方平台二跳地址
-	avalon.state("oauth", {
-		controller: "global",
-		url: "/oauth/jump",
-		onEnter: function () {
-			location.href = "https://openapi.baidu.com/social/oauth/2.0/receiver" + location.search;
-		},
+	avalon.router.get("/oauth/jump", function () {
+		location.href = "https://openapi.baidu.com/social/oauth/2.0/receiver" + location.search;
 	});
 
 	// 用户账号
@@ -734,9 +740,9 @@ require(['jquery', 'mmState'], function ($) {
 				controllerUrl: ["../user/user"],
 				ignoreChange: function (changeType) {
 					if (changeType) return true;
-				},
+				}
 			}
-		},
+		}
 	});
 
 	// 用户设置（需用户权限）
@@ -749,9 +755,25 @@ require(['jquery', 'mmState'], function ($) {
 				controllerUrl: ["../setting/setting"],
 				ignoreChange: function (changeType) {
 					if (changeType) return true;
-				},
+				}
 			}
 		},
+		absolute: true
+	});
+
+	// 用户设置 默认
+	avalon.state("setting.settings", {
+		controller: "setting",
+		url: "",
+		views: {
+			"settingContainer": {
+				templateUrl: '/static/html/setting/thrid.html',
+				controllerUrl: ['../setting/thrid'],
+				ignoreChange: function (changeType) {
+					if (changeType) return true;
+				}
+			}
+		}
 	});
 
 	avalon.state("setting.settings", {
@@ -763,20 +785,19 @@ require(['jquery', 'mmState'], function ($) {
 					return '/static/html/setting/' + param.type + '.html';
 				},
 				controllerUrl: function (param) {
-					console.log(param.type);
 					return ["../setting/" + param.type];
 				},
 				ignoreChange: function (changeType) {
 					if (changeType) return true;
-				},
+				}
 			}
-		},
+		}
 	});
 
 	// 启动路由
 	avalon.history.start({
 		basepath: "/",
-		html5Mode: true,
+		html5Mode: true
 	});
 
 	// 扫描

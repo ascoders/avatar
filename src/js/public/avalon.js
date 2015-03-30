@@ -1323,28 +1323,28 @@ _____________________________________
         }
         if (IEVersion) {
             window.execScript([
-            "Function parseVB(code)",
-            "\tExecuteGlobal(code)",
-            "End Function",
-            "Dim VBClassBodies",
-            "Set VBClassBodies=CreateObject(\"Scripting.Dictionary\")",
-            "Function findOrDefineVBClass(name,body)",
-            "\tDim found",
-            "\tfound=\"\"",
-            "\tFor Each key in VBClassBodies",
-            "\t\tIf body=VBClassBodies.Item(key) Then",
-            "\t\t\tfound=key",
-            "\t\t\tExit For",
-            "\t\tEnd If",
-            "\tnext",
-            "\tIf found=\"\" Then",
-            "\t\tparseVB(\"Class \" + name + body)",
-            "\t\tVBClassBodies.Add name, body",
-            "\t\tfound=name",
-            "\tEnd If",
-            "\tfindOrDefineVBClass=found",
-            "End Function"
-        ].join("\n"), "VBScript")
+                "Function parseVB(code)",
+                "\tExecuteGlobal(code)",
+                "End Function",
+                "Dim VBClassBodies",
+                "Set VBClassBodies=CreateObject(\"Scripting.Dictionary\")",
+                "Function findOrDefineVBClass(name,body)",
+                "\tDim found",
+                "\tfound=\"\"",
+                "\tFor Each key in VBClassBodies",
+                "\t\tIf body=VBClassBodies.Item(key) Then",
+                "\t\t\tfound=key",
+                "\t\t\tExit For",
+                "\t\tEnd If",
+                "\tnext",
+                "\tIf found=\"\" Then",
+                "\t\tparseVB(\"Class \" + name + body)",
+                "\t\tVBClassBodies.Add name, body",
+                "\t\tfound=name",
+                "\tEnd If",
+                "\tfindOrDefineVBClass=found",
+                "End Function"
+            ].join("\n"), "VBScript")
 
             function VBMediator(instance, accessors, name, value) {
                 var accessor = accessors[name]
@@ -1396,17 +1396,18 @@ _____________________________________
 
                 }
 
+
                 buffer.push("End Class")
                 var code = buffer.join("\r\n"),
                     realClassName = window['findOrDefineVBClass'](className, code) //如果该VB类已定义，返回类名。否则用className创建一个新类。
                 if (realClassName === className) {
                     window.parseVB([
-                    "Function " + className + "Factory(a, b)", //创建实例并传入两个关键的参数
-                    "\tDim o",
-                    "\tSet o = (New " + className + ")(a, b)",
-                    "\tSet " + className + "Factory = o",
-                    "End Function"
-                ].join("\r\n"))
+                        "Function " + className + "Factory(a, b)", //创建实例并传入两个关键的参数
+                        "\tDim o",
+                        "\tSet o = (New " + className + ")(a, b)",
+                        "\tSet " + className + "Factory = o",
+                        "End Function"
+                    ].join("\r\n"))
                 }
                 // console.log(code)
                 var ret = window[realClassName + "Factory"](accessors, VBMediator) //得到其产品

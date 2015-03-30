@@ -3,11 +3,16 @@
 define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], function ($) {
 	var vm = avalon.define({
 		$id: "index",
-		categorys: {
-			'<i class="fa fa-th f-mr5"></i>全部': '-1',
-			'<i class="fa fa-comments f-mr5"></i>问答': '0',
-			'<i class="fa fa-share-alt f-mr5"></i>分享': '1',
-		},
+		categorys: [{
+			key: '<i class="fa fa-th f-mr5"></i>全部',
+			value: '-1'
+		}, {
+			key: '<i class="fa fa-comments f-mr5"></i>问答',
+			value: '0'
+		}, {
+			key: '<i class="fa fa-share-alt f-mr5"></i>分享',
+			value: '1'
+		}],
 		lists: [], //文章列表
 		pagin: '', //分页按钮
 		category: -1, //当前分类
@@ -23,15 +28,15 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 		temp: {
 			editor: {},
 			from: 0,
-			watchCategory: false, //是否执行category的watch
+			watchCategory: false //是否执行category的watch
 		},
 		changeNumber: function (val) { // 改变每页显示数量
 			//跳转
 			avalon.router.go('index', {
 				query: {
 					number: val,
-					category: vm.category,
-				},
+					category: vm.category
+				}
 			});
 		},
 		toggleTag: function () { // 新增标签输入框组是否显示
@@ -94,7 +99,7 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 				title: vm.inputTitle,
 				content: vm.inputContent,
 				category: vm.inputCategory,
-				tag: vm.tagArray.$model,
+				tag: vm.tagArray.$model
 			}, '发布成功', '', function (data) {
 				//清空输入内容
 				vm.inputTitle = '';
@@ -117,11 +122,11 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 				query: {
 					category: val,
 					from: 0,
-					number: vm.number,
-				},
+					number: vm.number
+				}
 			});
 		},
-		$skipArray: ['temp'],
+		$skipArray: ['temp']
 	});
 
 	return avalon.controller(function ($ctrl) {
@@ -144,7 +149,7 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 			var postParams = {
 				category: mmState.query.category,
 				from: mmState.query.from,
-				number: mmState.query.number,
+				number: mmState.query.number
 			};
 
 			if (mmState.query.tag != undefined) {
@@ -155,7 +160,7 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 				postParams = {
 					from: mmState.query.from,
 					number: mmState.query.number,
-					tag: mmState.query.tag,
+					tag: mmState.query.tag
 				};
 
 				// 查询热门标签
@@ -174,6 +179,10 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 				}
 
 				for (var key in data.lists) {
+					if (!data.lists.hasOwnProperty(key) || key === "hasOwnProperty") {
+						continue;
+					}
+
 					//是否为精华
 					if (data.lists[key].r * 5 + data.lists[key].v > 100) { //判定为精华
 						data.lists[key].good = true;
@@ -236,7 +245,7 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 				type: 'post',
 				deferRequestBy: 300,
 				params: {
-					_xsrf: xsrftoken,
+					_xsrf: xsrftoken
 				},
 				onSelect: function (suggestion) {
 					vm.addTagInput = suggestion.value;

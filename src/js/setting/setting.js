@@ -3,7 +3,7 @@
 define("setting", ['jquery'], function ($) {
 	var vm = avalon.define({
 		$id: "setting",
-		type: '', // 当前分类
+		type: '' // 当前分类
 	});
 
 	return avalon.controller(function ($ctrl) {

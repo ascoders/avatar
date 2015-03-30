@@ -1149,6 +1149,7 @@
 
 			return;
 		}
+		/*
 		try {
 			if (opt) opt = merge({}, marked.defaults, opt);
 			return Parser.parse(Lexer.lex(src, opt), opt);
@@ -1159,6 +1160,9 @@
 			}
 			throw e;
 		}
+		*/
+		if (opt) opt = merge({}, marked.defaults, opt);
+		return Parser.parse(Lexer.lex(src, opt), opt);
 	}
 
 	/**
