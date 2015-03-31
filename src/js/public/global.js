@@ -754,15 +754,16 @@ require(['jquery', 'mmState'], function ($) {
 				templateUrl: '/static/html/setting/setting.html',
 				controllerUrl: ["../setting/setting"],
 				ignoreChange: function (changeType) {
+
 					if (changeType) return true;
 				}
 			}
 		},
-		absolute: true
+		abstract: true
 	});
 
 	// 用户设置 默认
-	avalon.state("setting.settings", {
+	avalon.state("setting.default", {
 		controller: "setting",
 		url: "",
 		views: {
@@ -770,6 +771,7 @@ require(['jquery', 'mmState'], function ($) {
 				templateUrl: '/static/html/setting/thrid.html',
 				controllerUrl: ['../setting/thrid'],
 				ignoreChange: function (changeType) {
+					console.log('12312321342343214123123');
 					if (changeType) return true;
 				}
 			}

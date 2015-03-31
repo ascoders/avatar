@@ -438,14 +438,10 @@ td {
     ul {
         margin: 0;
         padding: 0;
-        display: inline;
-        overflow: hidden;
     }
     ul li {
         list-style: none;
         float: left;
-        display: inline;
-        overflow: hidden;
         padding: 0;
         span {
             line-height: 40px;
@@ -483,6 +479,9 @@ td {
     }
     .j-drop-content li {
         float: none;
+        &:hover {
+            background: #44B78F;
+        }
     }
     .j-drop-content li a {
         height: 35px;
