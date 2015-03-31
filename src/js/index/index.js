@@ -85,8 +85,8 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 				return;
 			}
 
-			if (vm.inputTitle.length > 25) {
-				noticle('标题最长25', 'red');
+			if (vm.inputTitle.length > 60) {
+				notice('标题最长60', 'red');
 				return;
 			}
 
