@@ -42,6 +42,7 @@ avalon.filters.setLevel = function (str) { // 发布*2 评论*1
 };
 
 require.config({
+	baseUrl: "/static/",
 	paths: {
 		"jquery": "http://cdn.bootcss.com/jquery/1.11.2/jquery.min",
 		"jQuery": "http://cdn.bootcss.com/jquery/1.11.2/jquery.min",
@@ -56,14 +57,18 @@ require.config({
 		"prettify": "http://cdn.bootcss.com/prettify/r298/prettify.min", //code美化
 		"chart": "http://cdn.bootcss.com/Chart.js/1.0.1-beta.2/Chart.min", //表格
 		"md5": "http://cdn.bootcss.com/blueimp-md5/1.1.0/js/md5.min", //md5加密
-		"jquery.tree": "jquery.treeview", //tree树状结构
-		"jquery.typetype": "jquery.typetype", //模拟输入
-		"jquery.taboverride": "taboverride", //tab键变为缩进
-		"contextMenu": "jquery.contextMenu", //右键菜单
-		"jquery.jbox": "jBox", //迷你提示框
-		"marked": "marked", //markdown解析器
-		"editor": "editor", //编辑器
-		"frontia": "baidu.frontia.1.0.0" //百度社会化组件
+		"jquery.tree": "js/public/jquery.treeview", //tree树状结构
+		"jquery.typetype": "js/public/jquery.typetype", //模拟输入
+		"jquery.taboverride": "js/public/taboverride", //tab键变为缩进
+		"contextMenu": "js/public/jquery.contextMenu", //右键菜单
+		"jquery.jbox": "js/public/jBox", //迷你提示框
+		"marked": "js/public/marked", //markdown解析器
+		"editor": "js/public/editor", //编辑器
+		"frontia": "js/public/baidu.frontia.1.0.0", //百度社会化组件
+		"mmState": 'js/public/mmState',
+		"mmRouter": 'js/public/mmRouter',
+		"mmHistory": 'js/public/mmHistory',
+		"mmPromise": 'js/public/mmPromise'
 	},
 	shim: {
 		'jquery.timeago': {
@@ -687,7 +692,7 @@ require(['jquery', 'mmState'], function ($) {
 		views: {
 			"container": {
 				templateUrl: '/static/html/index/home.html',
-				controllerUrl: ["../index/index"],
+				controllerUrl: ["js/index/index"],
 				ignoreChange: function (changeType) {
 					if (changeType) return true;
 				}
@@ -702,7 +707,7 @@ require(['jquery', 'mmState'], function ($) {
 		views: {
 			"container": {
 				templateUrl: '/static/html/article/article.html',
-				controllerUrl: ["../article/article"],
+				controllerUrl: ["js/article/article"],
 				ignoreChange: function (changeType) {
 					if (changeType) return true;
 				}
@@ -717,7 +722,7 @@ require(['jquery', 'mmState'], function ($) {
 		views: {
 			"container": {
 				templateUrl: '/static/html/check/oauth.html',
-				controllerUrl: ["../check/oauth"],
+				controllerUrl: ["js/check/oauth"],
 				ignoreChange: function (changeType) {
 					if (changeType) return true;
 				}
@@ -737,7 +742,7 @@ require(['jquery', 'mmState'], function ($) {
 		views: {
 			"container": {
 				templateUrl: '/static/html/user/user.html',
-				controllerUrl: ["../user/user"],
+				controllerUrl: ["js/user/user"],
 				ignoreChange: function (changeType) {
 					if (changeType) return true;
 				}
@@ -752,7 +757,7 @@ require(['jquery', 'mmState'], function ($) {
 		views: {
 			"container": {
 				templateUrl: '/static/html/setting/setting.html',
-				controllerUrl: ["../setting/setting"],
+				controllerUrl: ["js/setting/setting"],
 				ignoreChange: function (changeType) {
 
 					if (changeType) return true;
@@ -769,7 +774,7 @@ require(['jquery', 'mmState'], function ($) {
 		views: {
 			"settingContainer": {
 				templateUrl: '/static/html/setting/thrid.html',
-				controllerUrl: ['../setting/thrid'],
+				controllerUrl: ['js/setting/thrid'],
 				ignoreChange: function (changeType) {
 					console.log('12312321342343214123123');
 					if (changeType) return true;
@@ -787,7 +792,7 @@ require(['jquery', 'mmState'], function ($) {
 					return '/static/html/setting/' + param.type + '.html';
 				},
 				controllerUrl: function (param) {
-					return ["../setting/" + param.type];
+					return ["js/setting/" + param.type];
 				},
 				ignoreChange: function (changeType) {
 					if (changeType) return true;

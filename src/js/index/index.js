@@ -184,7 +184,7 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 					}
 
 					//是否为精华
-					if (data.lists[key].r * 5 + data.lists[key].v > 100) { //判定为精华
+					if (data.lists[key].r > 10) { //判定为精华
 						data.lists[key].good = true;
 					} else {
 						data.lists[key].good = false;

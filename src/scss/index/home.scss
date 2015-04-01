@@ -137,7 +137,6 @@
 	.friend {
 		.box {
 			display: inline-block;
-			width: 100px;
 			height: auto;
 			padding: 0;
 			.common-box {
@@ -153,6 +152,7 @@
 					background: url(/static/img/friend/w3c.png);
 					width: 28px;
 					height: 26px;
+					z-index: 10;
 				}
 			}
 			.fex {
@@ -161,6 +161,7 @@
 					background: url(/static/img/friend/fex.png);
 					width: 52px;
 					height: 26px;
+					z-index: 10;
 				}
 			}
 			.ued {
@@ -169,6 +170,7 @@
 					background: url(/static/img/friend/ued.png);
 					width: 26px;
 					height: 26px;
+					z-index: 10;
 				}
 			}
 			.isux {
@@ -177,6 +179,7 @@
 					background: url(/static/img/friend/isux.png);
 					width: 92px;
 					height: 26px;
+					z-index: 10;
 				}
 			}
 			.text {

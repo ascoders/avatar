@@ -84,7 +84,7 @@ func (this *Article) FindOne(id string) (bool, interface{}) {
 func (this *Article) Count(category int) int {
 	//如果category为-1，则查询全部总数
 	if category == -1 {
-		count, _ := Db.C("article").Find(nil).Count()
+		count, _ := Db.C("article").Find(bson.M{"tp": 0}).Count()
 		return count
 	} else {
 		count, _ := Db.C("article").Find(bson.M{"c": category, "tp": 0}).Count()

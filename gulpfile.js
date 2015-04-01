@@ -30,12 +30,14 @@ var paths = {
 	src: {
 		html: 'src/html/**/*.html',
 		css: 'src/scss/**/*.scss',
-		js: 'src/js/**/*.js'
+		js: 'src/js/**/*.js',
+		image: 'src/img/**/*'
 	},
 	dist: {
 		html: 'static/html',
 		css: 'static/css',
-		js: 'static/js'
+		js: 'static/js',
+		image: 'static/img'
 	}
 };
 
@@ -77,6 +79,15 @@ gulp.task('jsDest', function () {
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+// 图片处理
+///////////////////////////////////////////////////////////////////////////////////////////////
+gulp.task('image', function () {
+	gulp.src(paths.src.image)
+		.pipe(imagemin())
+		.pipe(gulp.dest(paths.dist.image));
+})
+
+///////////////////////////////////////////////////////////////////////////////////////////////
 // 清空模版、样式、js
 ///////////////////////////////////////////////////////////////////////////////////////////////
 gulp.task('clean', function (cb) {
@@ -95,16 +106,19 @@ gulp.task('watch', function () {
 
 	// 监听js
 	gulp.watch(paths.src.js, ['js']);
+
+	// 监听js
+	gulp.watch(paths.src.image, ['image']);
 });
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // 默认任务 清空模版、样式、js并重建 运行语句 gulp
 ///////////////////////////////////////////////////////////////////////////////////////////////
 gulp.task('default', ['clean'], function () {
-	gulp.start('html', 'css', 'js', 'watch');
+	gulp.start('html', 'css', 'js', 'image', 'watch');
 });
 
 // 部署模式
 gulp.task('dest', ['clean'], function () {
-	gulp.start('html', 'css', 'jsDest');
+	gulp.start('html', 'css', 'jsDest', 'image');
 });
