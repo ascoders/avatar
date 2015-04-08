@@ -6,6 +6,7 @@ define("user", ['jquery'], function ($) {
 		user: {},
 		lists: [],
 		pagin: '',
+		$userId: '', // 当前用户id
 		rendered: function () { // 文章渲染完毕
 			$('.timeago').timeago();
 		},
@@ -22,7 +23,11 @@ define("user", ['jquery'], function ($) {
 				});
 			}
 
-			vm.lists.clear();
+			// 如果不是同一个用户，则清空发帖列表
+			if (param.id !== vm.$userId) {
+				vm.lists.clear()
+			}
+			vm.$userId = param.id
 
 			// 获取用户信息
 			if (avalon.vmodels.global.temp.users[param.id]) { //优先使用缓存

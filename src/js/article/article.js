@@ -240,6 +240,7 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 				vm.pagin = createPagin(mmState.query.from, mmState.query.number, data.r);
 
 				var setUserInfo = function (info) {
+					console.log(info);
 					vm.author = info;
 
 					avalon.nextTick(function () {

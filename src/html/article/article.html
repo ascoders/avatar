@@ -60,6 +60,13 @@
             <button class='btn btn-default f-hvc f-mt10 f-ml10' ms-if='edit' ms-click='removeEdit'><i ms-class="f-mr5 fa fa-remove f-ml5"></i>取消编辑</button>
           </div>
         </div>
+
+        <!-- 更多推荐 -->
+        <div class="g-bd f-mt20 f-cb f-p20">
+          <h1>推荐教程</h1>
+          <p><a href='#!/?tag=avalon基础教程'><i class='fa fa-book f-mr5'></i>avalon基础教程</a></p>
+        </div>
+
       </div>
     </div>
     
@@ -68,7 +75,7 @@
       	<img class='author-image' ms-if='author.i' ms-src='author.i'>
         <a class='user-name' ms-href='#!/user/{[{author._id}]}'>{[{author.n}]}</a>
       	<div class='f-mt10'>
-          <a ms-if='user.l != ""' class='btn btn-default github' ms-href='https://github.com/{[{author.l}]}' target='_blank'><i class="fa fa-github"></i></a>
+          <a ms-if='author.l != ""' class='btn btn-default github' ms-href='https://github.com/{[{author.l}]}' target='_blank'><i class="fa fa-github"></i></a>
         </div>
       	<div class='f-mt10'>注册：<span class='timeago' ms-attr-title='author.t'></span></div>
       	<div class='f-cb f-mt10'>
