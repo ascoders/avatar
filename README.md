@@ -1,18 +1,24 @@
 # avatar
 avalon开源中文社区
 
-# 服务器配置
+### 服务器配置
 
-## Centos7.0
+服务器环境：`Centos7.0`
 
-## Redis
+**Redis**
 
-安装方式 yum install redis
+````shell
+yum install redis
+````
 
-## Mongodb
+**Mongodb**
 
-安装方式 yum install mongodb
+````shell
+yum install mongodb
+````
 
-## Nginx
+**Nginx**
 
-安装方式 yum install nginx
+````shell
+yum install nginx
+````
