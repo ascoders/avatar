@@ -31,6 +31,9 @@ html, body, h1, h2, h3, h4, h5, h6, div, dl, dt, dd, ul, ol, li, p, blockquote, 
     margin: 0;
     padding: 0;
 }
+pre {
+    font-family: consolas;
+}
 html {
     overflow-x: hidden;
 }
@@ -71,7 +74,7 @@ h1, h2, h3, h4, h5, h6, small {
 sup, sub {
     font-size: 83%;
 }
-pre, code, kbd, samp {
+code, kbd, samp {
     font-family: inherit;
 }
 code {

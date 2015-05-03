@@ -348,21 +348,6 @@ define("article", ['jquery', 'marked', 'prettify', 'editor', 'jquery.timeago', '
 					vm.addTag();
 				}
 			});
-
-			// 百度图话
-			(function () {
-				if (!vm.$tuhua) {
-					vm.$tuhua = true;
-
-					window.baiduImageTalk = {
-						'renderUrl': 'http://bcscdn.baidu.com/public03/imageplus/tuhua/v3/toggle.app.js'
-					};
-					var s = document.createElement('script');
-					s.type = 'text/javascript';
-					s.src = 'http://bcscdn.baidu.com/public03/imageplus/tuhua/common_loader.js?cache=' + Math.ceil(new Date() / 3600000);
-					document.getElementsByTagName('head')[0].appendChild(s);
-				}
-			})();
 		}
 	})
 });

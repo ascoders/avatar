@@ -107,8 +107,11 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 					}
 
 					createDropzone(button[0], 'http://upload.qiniu.com', opts.uploadParams, ".jpg,.jpeg,.png,.gif,.ico", function (data, file) {
+						// 过滤图片名的[ ] ( )
+						var fileName = file.name.replace(/[\[\]\(\)]/g, '*')
+
 						_this.selection('insert', {
-							text: '\n![' + file.name + '](http://avatar.img.wokugame.com/' + data.name + ')',
+							text: '\n![' + fileName + '](http://avatar.img.wokugame.com/' + data.name + ')',
 							mode: 'before'
 						});
 						//刷新视图
