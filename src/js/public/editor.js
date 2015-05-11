@@ -58,8 +58,14 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			"list-ul": "无序列表",
 			"minus": "分割线",
 			"image": "图片",
-			"table": "表格"
+			"table": "表格",
+			'save': '保存草稿',
+			'paste': '恢复草稿'
 		};
+
+		// 草稿
+		var lastDraft;
+		var draftInterval = null;
 
 		this.createDom = function () { // 刷新dom
 			// ie7及其以下没有此功能
@@ -115,7 +121,7 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 							mode: 'before'
 						});
 						//刷新视图
-						_this.freshPreview();
+						freshPreview();
 					});
 
 					break;
@@ -131,6 +137,19 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			button.jBox('Tooltip', {
 				content: "markdown 语法支持"
 			});
+
+			// 监听草稿
+			if (draftInterval == null) {
+				draftInterval = setInterval(function () {
+					// textarea不在页面中，移除监听
+					if (!$.contains(document, _this[0])) {
+						clearInterval(draftInterval);
+						draftInterval = null;
+					}
+
+					save();
+				}, 5000);
+			}
 		}
 
 		/* --------------- createDom end -------------------- */
@@ -354,6 +373,12 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 					mode: 'after'
 				});
 				break;
+			case 'save':
+				save();
+				break;
+			case 'paste':
+				load();
+				break;
 			}
 
 			//如果是li，父级隐藏
@@ -370,7 +395,7 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			_this.trigger('autosize.resize');
 
 			//刷新视图
-			_this.freshPreview();
+			freshPreview();
 		});
 
 		//设置markdown解析格式
@@ -388,8 +413,12 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			xhtml: false
 		});
 
+		/* ************** *
+		 * ** 方法函数 ** *
+		 * ************** */
+
 		//刷新预览视图
-		this.freshPreview = function () {
+		function freshPreview() {
 			if (!markdown) {
 				return;
 			}
@@ -407,13 +436,13 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			}
 
 			if (render == 0) { //实时渲染
-				_this.doRender();
+				doRender();
 			} else if (render == 1) { //延时渲染
 				if (renderTimeout != null) {
 					clearTimeout(renderTimeout); //每次有输入都清除timeout执行
 				}
 
-				renderTimeout = setTimeout(_this.doRender, 300);
+				renderTimeout = setTimeout(doRender, 300);
 			}
 
 			//如果视图高于500px，改变显示方式
@@ -442,7 +471,7 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			_this.trigger('autosize.resize');
 		}
 
-		this.doRender = function () { //执行渲染，耗时
+		function doRender() { //执行渲染，耗时
 			//计算代码耗时：开始
 			var start = new Date().getTime();
 
@@ -476,7 +505,7 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			}
 		}
 
-		//是否支持markdown语法
+		// 是否支持markdown语法
 		this.enableMarkdown = function (ok) {
 			markdown = ok;
 			if (!ok) {
@@ -491,13 +520,36 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			}
 		}
 
-		//获得当前行的内容 0:当前行 1:上一行
+		// 获得当前行的内容 0:当前行 1:上一行
 		var getLineContent = function (line) {
 			var selectStart = _this.selection('getPos').start;
 			var beforeWords = subStr(_this.val(), 0, selectStart);
 			var wordArray = beforeWords.split('\n');
 			var lastLine = wordArray[wordArray.length - line - 1];
 			return lastLine;
+		}
+
+		// 保存草稿
+		function save() {
+			if (_this.val() != '' && _this.val() != lastDraft) {
+				lastDraft = _this.val();
+
+				store.set('editDraft', lastDraft);
+
+				notice('草稿已保存', 'green');
+			}
+		}
+
+		// 获取草稿
+		function load() {
+			var draft = store.get('editDraft');
+			if (draft != '') {
+				lastDraft = draft;
+				_this.val(draft);
+				freshPreview();
+
+				notice('已恢复草稿', 'green');
+			}
 		}
 
 		/* ************** *
@@ -532,7 +584,7 @@ define('editor', ['jquery', 'marked', 'prettify', 'jquery.jbox', 'jquery.selecti
 			}
 
 			if (e.type == "keyup") {
-				_this.freshPreview();
+				freshPreview();
 			}
 		});
 
