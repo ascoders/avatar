@@ -804,7 +804,11 @@ require(['jquery', 'mmState'], function ($) {
 	// 启动路由
 	avalon.history.start({
 		basepath: "/",
-		html5Mode: true
+		html5Mode: true,
+		routeElementJudger: function (element) {
+			console.log(typeof $(element).attr('avalon-href'));
+			return typeof $(element).attr('avalon-href') !== 'undefined'
+		}
 	});
 
 	// 扫描

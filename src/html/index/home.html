@@ -19,7 +19,7 @@
           </div>
         </div>
 
-        <a class='box' ms-repeat='lists' data-repeat-rendered='rendered' ms-href='#!/art/{[{el._id}]}'>
+        <a class='box' ms-repeat='lists' data-repeat-rendered='rendered' ms-href='/art/{[{el._id}]}' avalon-href>
           <img class='ower-image' ms-src='el.ui' ms-if='el.ui != ""'>
           <span class='tag tag-top' ms-if='el.tp > 0'>置顶</span>
           <span class='tag tag-category'>{[{el._c}]}</span>
@@ -146,7 +146,7 @@
     <div class="g-sd2" ms-if='searchTag'>
       <div class='g-bd'>
         <div class='bar-title'>热门标签</div>
-        <a class='bar-content' ms-class='active:el.n == searchTag' ms-repeat='hotTags' ms-href='#!/?tag={[{el.n}]}'><i class='fa fa-tag f-mr5'></i>{[{el.n}]}</a>
+        <a class='bar-content' ms-class='active:el.n == searchTag' ms-repeat='hotTags' ms-href='/?tag={[{el.n}]}' avalon-href><i class='fa fa-tag f-mr5'></i>{[{el.n}]}</a>
       </div>
     </div>
 

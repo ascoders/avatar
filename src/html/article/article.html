@@ -5,7 +5,7 @@
 	      <div class='g-bd f-p20'>
 	      	<div class='title'>{[{article.t}]}</div>
 	      	<div class='info f-cb f-pr'>
-            <span class='f-mr5'><a ms-href='#!/user/{[{author._id}]}'>{[{author.n}]}</a>：<span class='timeago' ms-attr-title='article.tm'></span></span>
+            <span class='f-mr5'><a ms-href='/user/{[{author._id}]}' avalon-href>{[{author.n}]}</a>：<span class='timeago' ms-attr-title='article.tm'></span></span>
 	      		<span class='f-mr5'>浏览量：{[{article.v}]}</span>
             <span class='f-mr5'>评论：{[{article.r}]}</span>
             <select class='f-pa operate-select' ms-if='my._id == article.u || my.ad' style='right:240px;bottom:0;' ms-duplex-int='article.c' ms-change='changeCategory(article.c)'>
@@ -36,7 +36,7 @@
 	      		<div class='title'>
 	      			<img class='img' ms-src='el.ui'>
               [{[{el.ua + el.ur | setLevel}]}]
-	      			<a ms-href='#!/user/{[{el._id}]}'>{[{el.un}]}</a>
+	      			<a ms-href='/user/{[{el._id}]}' avalon-href>{[{el.un}]}</a>
 	      		</div>
 	      		<div class='detail'>
              {[{el.co | html}]}
@@ -73,7 +73,7 @@
     <div class="g-sd2">
       <div class='g-bd f-p20'>
       	<img class='author-image' ms-if='author.i' ms-src='author.i'>
-        <a class='user-name' ms-href='#!/user/{[{author._id}]}'>{[{author.n}]}</a>
+        <a class='user-name' ms-href='/user/{[{author._id}]}' avalon-href>{[{author.n}]}</a>
       	<div class='f-mt10'>
           <a ms-if='author.l != ""' class='btn btn-default github' ms-href='https://github.com/{[{author.l}]}' target='_blank'><i class="fa fa-github"></i></a>
         </div>
@@ -86,17 +86,17 @@
       </div>
       <div class='g-bd f-mt10' ms-if='hot.size() != 0'>
       	<div class='bar-title'>被热评的</div>
-      	<a class='bar-content' ms-repeat='hot' ms-href='#!/art/{[{el._id}]}'>{[{el.t}]}</a>
+      	<a class='bar-content' ms-repeat='hot' ms-href='/art/{[{el._id}]}' avalon-href>{[{el.t}]}</a>
       </div>
 
       <div class='g-bd f-mt10' ms-if='cold.size() != 0'>
       	<div class='bar-title'>被忽视的</div>
-      	<a class='bar-content' ms-repeat='cold' ms-href='#!/art/{[{el._id}]}'>{[{el.t}]}</a>
+      	<a class='bar-content' ms-repeat='cold' ms-href='/art/{[{el._id}]}' avalon-href>{[{el.t}]}</a>
       </div>
 
       <div class='g-bd f-mt10' ms-if='cold.size() != 0'>
         <div class='bar-title'>相关内容</div>
-        <a class='bar-content' ms-repeat='same' ms-href='#!/art/{[{el._id}]}'>{[{el.t}]}</a>
+        <a class='bar-content' ms-repeat='same' ms-href='/art/{[{el._id}]}' avalon-href>{[{el.t}]}</a>
         <p class='f-pb10 f-tac text-muted' ms-if="same.size() == 0">添加<i class='fa fa-tag f-ml5 f-mr5'></i>标签以搜索相关内容</p>
       </div>
     </div>

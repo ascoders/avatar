@@ -1,13 +1,13 @@
-define(["avalon"], function (avalon) {
+define(["avalon"], function(avalon) {
     var anchorElement = document.createElement('a')
 
-    var History = avalon.History = function () {
+    var History = avalon.History = function() {
         this.location = location
     }
 
     History.started = false
-        //取得当前IE的真实运行环境
-    History.IEVersion = (function () {
+    //取得当前IE的真实运行环境
+    History.IEVersion = (function() {
         var mode = document.documentMode
         return mode ? mode : window.XMLHttpRequest ? 7 : 6
     })()
@@ -18,7 +18,8 @@ define(["avalon"], function (avalon) {
         hashPrefix: "!",
         iframeID: null, //IE6-7，如果有在页面写死了一个iframe，这样似乎刷新的时候不会丢掉之前的历史
         interval: 50, //IE6-7,使用轮询，这是其时间时隔
-        fireAnchor: true //决定是否将滚动条定位于与hash同ID的元素上
+        fireAnchor: true,//决定是否将滚动条定位于与hash同ID的元素上
+        routeElementJudger: avalon.noop // 判断a元素是否是触发router切换的链接
     }
 
     var oldIE = window.VBArray && History.IEVersion <= 7
@@ -26,7 +27,7 @@ define(["avalon"], function (avalon) {
     var supportHashChange = !!("onhashchange" in window && (!window.VBArray || !oldIE))
     History.prototype = {
         constructor: History,
-        getFragment: function (fragment) {
+        getFragment: function(fragment) {
             if (fragment == null) {
                 if (this.monitorMode === "popstate") {
                     fragment = this.getPath()
@@ -36,7 +37,7 @@ define(["avalon"], function (avalon) {
             }
             return fragment.replace(/^[#\/]|\s+$/g, "")
         },
-        getHash: function (window) {
+        getHash: function(window) {
             // IE6直接用location.hash取hash，可能会取少一部分内容
             // 比如 http://www.cnblogs.com/rubylouvre#stream/xxxxx?lang=zh_c
             // ie6 => location.hash = #stream/xxxxx
@@ -48,7 +49,7 @@ define(["avalon"], function (avalon) {
             var path = (window || this).location.href
             return this._getHash(path.slice(path.indexOf("#")))
         },
-        _getHash: function (path) {
+        _getHash: function(path) {
             if (path.indexOf("#/") === 0) {
                 return decodeURIComponent(path.slice(2))
             }
@@ -57,26 +58,35 @@ define(["avalon"], function (avalon) {
             }
             return ""
         },
-        getPath: function () {
+        getPath: function() {
             var path = decodeURIComponent(this.location.pathname + this.location.search)
             var root = this.basepath.slice(0, -1)
             if (!path.indexOf(root))
                 path = path.slice(root.length)
             return path.slice(1)
         },
-        _getAbsolutePath: function (a) {
+        _getAbsolutePath: function(a) {
             return !a.hasAttribute ? a.getAttribute("href", 4) : a.href
         },
-        start: function (options) {
+        /*
+         * @interface avalon.history.start 开始监听历史变化
+         * @param options 配置参数
+         * @param options.hashPrefix hash以什么字符串开头，默认是 "!"，对应实际效果就是"#!"
+         * @param options.routeElementJudger 判断a元素是否是触发router切换的链接的函数，return true则触发切换，默认为avalon.noop，history内部有一个判定逻辑，是先判定a元素的href属性是否以hashPrefix开头，如果是则当做router切换元素，因此综合判定规则是 href.indexOf(hashPrefix) == 0 || routeElementJudger(ele, ele.href)，如果routeElementJudger返回true则跳转至href，如果返回的是字符串，则跳转至返回的字符串，如果返回false则返回浏览器默认行为
+         * @param options.html5Mode 是否采用html5模式，即不使用hash来记录历史，默认false
+         * @param options.fireAnchor 决定是否将滚动条定位于与hash同ID的元素上，默认为true
+         * @param options.basepath 根目录，默认为"/"
+         */
+        start: function(options) {
             if (History.started)
                 throw new Error("avalon.history has already been started")
             History.started = true
             this.options = avalon.mix({}, History.defaults, options)
-                //IE6不支持maxHeight, IE7支持XMLHttpRequest, IE8支持window.Element，querySelector, 
-                //IE9支持window.Node, window.HTMLElement, IE10不支持条件注释
-                //确保html5Mode属性存在,并且是一个布尔
+            //IE6不支持maxHeight, IE7支持XMLHttpRequest, IE8支持window.Element，querySelector, 
+            //IE9支持window.Node, window.HTMLElement, IE10不支持条件注释
+            //确保html5Mode属性存在,并且是一个布尔
             this.html5Mode = !!this.options.html5Mode
-                //监听模式
+            //监听模式
             this.monitorMode = this.html5Mode ? "popstate" : "hashchange"
             if (!supportPushState) {
                 if (this.html5Mode) {
@@ -89,8 +99,8 @@ define(["avalon"], function (avalon) {
                 this.monitorMode = "iframepoll"
             }
             this.prefix = "#" + this.options.hashPrefix + "/"
-                //确认前后都存在斜线， 如"aaa/ --> /aaa/" , "/aaa --> /aaa/", "aaa --> /aaa/", "/ --> /"
-            this.basepath = ("/" + this.options.basepath + "/").replace(/^\/+|\/+$/g, "/") // 去最左右两边的斜线
+            //确认前后都存在斜线， 如"aaa/ --> /aaa/" , "/aaa --> /aaa/", "aaa --> /aaa/", "/ --> /"
+            this.basepath = ("/" + this.options.basepath + "/").replace(/^\/+|\/+$/g, "/")  // 去最左右两边的斜线
 
             this.fragment = this.getFragment()
 
@@ -105,8 +115,8 @@ define(["avalon"], function (avalon) {
             this.iframeHTML = html
             if (this.monitorMode === "iframepoll") {
                 //IE6,7在hash改变时不会产生历史，需要用一个iframe来共享历史
-                avalon.ready(function () {
-                    if (that.iframe) return
+                avalon.ready(function() {
+                    if(that.iframe) return
                     var iframe = that.iframe || document.getElementById(that.iframeID) || document.createElement('iframe')
                     iframe.src = 'javascript:0'
                     iframe.style.display = 'none'
@@ -126,15 +136,14 @@ define(["avalon"], function (avalon) {
                 if (that.monitorMode === "iframepoll" && !iframe) {
                     return false
                 }
-                var pageHash = that.getFragment(),
-                    hash
-                if (iframe) { //IE67
+                var pageHash = that.getFragment(), hash
+                if (iframe) {//IE67
                     var iframeHash = that.getHash(iframe)
-                        //与当前页面hash不等于之前的页面hash，这主要是用户通过点击链接引发的
+                    //与当前页面hash不等于之前的页面hash，这主要是用户通过点击链接引发的
                     if (pageHash !== that.fragment) {
                         that._setIframeHistory(that.prefix + pageHash)
                         hash = pageHash
-                            //如果是后退按钮触发hash不一致
+                        //如果是后退按钮触发hash不一致
                     } else if (iframeHash !== that.fragment) {
                         that.location.hash = that.prefix + iframeHash
                         hash = iframeHash
@@ -145,9 +154,7 @@ define(["avalon"], function (avalon) {
                 }
                 if (hash !== void 0) {
                     that.fragment = hash
-                    that.fireRouteChange(hash, {
-                        fromHistory: true
-                    })
+                    that.fireRouteChange(hash, {fromHistory: true})
                 }
             }
 
@@ -157,73 +164,71 @@ define(["avalon"], function (avalon) {
             // 支持hashchange 就监听hashchange(IE8,IE9,FF3)
             // 否则的话只能每隔一段时间进行检测了(IE6, IE7)
             switch (this.monitorMode) {
-            case "popstate":
-                this.checkUrl = avalon.bind(window, "popstate", checkUrl)
-                this._fireLocationChange = checkUrl
-                break
-            case "hashchange":
-                this.checkUrl = avalon.bind(window, "hashchange", checkUrl)
-                break;
-            case "iframepoll":
-                this.checkUrl = setInterval(checkUrl, this.options.interval)
-                break;
+                case "popstate":
+                    this.checkUrl = avalon.bind(window, "popstate", checkUrl)
+                    this._fireLocationChange = checkUrl
+                    break
+                case  "hashchange":
+                    this.checkUrl = avalon.bind(window, "hashchange", checkUrl)
+                    break;
+                case  "iframepoll":
+                    this.checkUrl = setInterval(checkUrl, this.options.interval)
+                    break;
             }
             //根据当前的location立即进入不同的路由回调
-            avalon.ready(function () {
-                that.fireRouteChange(that.fragment || "/", {
-                    replace: true
-                })
+            avalon.ready(function() {
+                that.fireRouteChange(that.fragment || "/", {replace: true})
             })
         },
-        fireRouteChange: function (hash, options) {
+        fireRouteChange: function(hash, options) {
             var router = avalon.router
             if (router && router.navigate) {
                 router.setLastPath(hash)
                 router.navigate(hash === "/" ? hash : "/" + hash, options)
             }
             if (this.options.fireAnchor) {
-                scrollToAnchorId(hash.replace(/\?.*/g, ""))
+                scrollToAnchorId(hash.replace(/\?.*/g,""))
             }
         },
         // 中断URL的监听
-        stop: function () {
+        stop: function() {
             avalon.unbind(window, "popstate", this.checkUrl)
             avalon.unbind(window, "hashchange", this.checkUrl)
             clearInterval(this.checkUrl)
             History.started = false
         },
-        updateLocation: function (hash, options, urlHash) {
+        updateLocation: function(hash, options, urlHash) {
             var options = options || {},
                 rp = options.replace,
-                st = options.silent
+                st =    options.silent
             if (this.monitorMode === "popstate") {
                 // html5 mode 第一次加载的时候保留之前的hash
                 var path = this.rootpath + hash + (urlHash || "")
-                if (path != this.location.pathname) history[rp ? "replaceState" : "pushState"]({
-                    path: path
-                }, document.title, path)
-                if (!st) this._fireLocationChange()
+                // html5 model包含query
+                if(path != this.location.href.split("#")[0]) history[rp ? "replaceState" : "pushState"]({path: path}, document.title, path)
+                if(!st) this._fireLocationChange()
             } else {
                 var newHash = this.prefix + hash
-                if (st && hash != this.getHash()) {
+                if(st && hash != this.getHash()) {
                     this._setIframeHistory(newHash, rp)
                     this.fragment = this._getHash(newHash)
                 }
                 this._setHash(this.location, newHash, rp)
             }
         },
-        _setHash: function (location, hash, replace) {
+        _setHash: function(location, hash, replace){
             var href = location.href.replace(/(javascript:|#).*$/, '')
-            if (replace) {
+            if (replace){
                 location.replace(href + hash)
-            } else location.hash = hash
+            }
+            else location.hash = hash
         },
-        _setIframeHistory: function (hash, replace) {
-            if (!this.iframe) return
+        _setIframeHistory: function(hash, replace) {
+            if(!this.iframe) return
             var idoc = this.iframe.document
-            idoc.open()
-            idoc.write(this.iframeHTML)
-            idoc.close()
+                idoc.open()
+                idoc.write(this.iframeHTML)
+                idoc.close()
             this._setHash(idoc.location, hash, replace)
         }
     }
@@ -234,8 +239,9 @@ define(["avalon"], function (avalon) {
 
     //劫持页面上所有点击事件，如果事件源来自链接或其内部，
     //并且它不会跳出本页，并且以"#/"或"#!/"开头，那么触发updateLocation方法
-    avalon.bind(document, "click", function (event) {
-        var defaultPrevented = "defaultPrevented" in event ? event['defaultPrevented'] : event.returnValue === false
+    avalon.bind(document, "click", function(event) {
+        var defaultPrevented = "defaultPrevented" in event ? event['defaultPrevented'] : event.returnValue === false,
+            routeElementJudger = avalon.history.options.routeElementJudger
         if (defaultPrevented || event.ctrlKey || event.metaKey || event.which === 2)
             return
         var target = event.target
@@ -253,7 +259,11 @@ define(["avalon"], function (avalon) {
                 return
             }
             var hash = href.replace(prefix, "").trim()
-            if (href.indexOf(prefix) === 0 && hash !== "") {
+            if(!(href.indexOf(prefix) === 0 && hash !== "")) {
+                hash = routeElementJudger(target, href)
+                if(hash === true) hash = href
+            }
+            if (hash) {
                 event.preventDefault()
                 avalon.router && avalon.router.navigate(hash)
             }
@@ -263,14 +273,14 @@ define(["avalon"], function (avalon) {
     //判定A标签的target属性是否指向自身
     //thanks https://github.com/quirkey/sammy/blob/master/lib/sammy.js#L219
     function targetIsThisWindow(targetWindow) {
-            if (!targetWindow || targetWindow === window.name || targetWindow === '_self' || (targetWindow === 'top' && window == window.top)) {
-                return true
-            }
-            return false
+        if (!targetWindow || targetWindow === window.name || targetWindow === '_self' || (targetWindow === 'top' && window == window.top)) {
+            return true
         }
-        //得到页面第一个符合条件的A标签
+        return false
+    }
+    //得到页面第一个符合条件的A标签
     function getFirstAnchor(list) {
-        for (var i = 0, el; el = list[i++];) {
+        for (var i = 0, el; el = list[i++]; ) {
             if (el.nodeName === "A") {
                 return el
             }

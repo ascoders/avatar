@@ -150,7 +150,7 @@ define(["mmHistory"], function() {
             var parsed = parseQuery((hash.charAt(0) !== "/" ? "/" : "") + hash),
                 options = options || {}
             if(hash.charAt(0) === "/")
-                hash = hash.slice(1)// 修正出现多扛的情况 fix http://localhost:8383/index.html#!//
+                hash = hash.slice(1)// 修正出现多扛的情况 fix http://localhost:8383/mmRouter/index.html#!//
             // 在state之内有写history的逻辑
             if(!avalon.state || options.silent) avalon.history && avalon.history.updateLocation(hash, avalon.mix({}, options, {silent: true}))
             // 只是写历史而已
@@ -259,12 +259,20 @@ define(["mmHistory"], function() {
         Router.prototype.getLastPath = function() {
             return localStorage.getItem("msLastPath")
         }
-        Router.prototype.setLastPath = function(path) {
+        var cookieID
+        Router.prototype.setLastPath = function (path) {
+            if (cookieID) {
+                clearTimeout(cookieID)
+                cookieID = null
+            }
             localStorage.setItem("msLastPath", path)
+            cookieID = setTimeout(function () {
+                localStorage.removItem("msLastPath")
+            }, 1000 * 60 * 60 * 24)
         }
     }
 
-
+       
 
     function escapeCookie(value) {
         return String(value).replace(/[,;"\\=\s%]/g, function(character) {
@@ -272,8 +280,8 @@ define(["mmHistory"], function() {
         });
     }
     function setCookie(key, value) {
-        var date = new Date()//将date设置为10天以后的时间 
-        date.setTime(date.getTime() + 60 * 60 * 24)
+        var date = new Date()//将date设置为1天以后的时间 
+        date.setTime(date.getTime() + 1000 * 60 * 60 * 24)
         document.cookie = escapeCookie(key) + '=' + escapeCookie(value) + ";expires=" + date.toGMTString()
     }
     function getCookie(name) {

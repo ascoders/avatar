@@ -130,8 +130,6 @@ define("index", ['jquery', 'editor', 'jquery.timeago', 'jquery.autocomplete'], f
 	});
 
 	return avalon.controller(function ($ctrl) {
-		// $ctrl.$vmodels = [vm];
-
 		$ctrl.$onEnter = function (param, rs, rj) {
 			mmState.query.from = mmState.query.from || 0;
 			mmState.query.number = mmState.query.number || 20;
